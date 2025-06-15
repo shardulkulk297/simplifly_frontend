@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
+    const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [msg, setMsg] = useState("");
@@ -29,7 +31,8 @@ const Login = () => {
        
        switch(role){
         case "CUSTOMER":
-            console.log("CUSTOMER DASHBOARD");
+            // console.log("CUSTOMER DASHBOARD");
+            navigate("/customer/search");
             break;
         case "FLIGHTOWNER":
             console.log("FLIGHTOWNER DASHBOARD");
