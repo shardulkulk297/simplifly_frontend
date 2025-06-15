@@ -1,6 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import Search from "./components/customer/Search"
-import Login from "./components/Login"
+import Login from "./Login"
+import FlightOwnerDashboard from "./components/flightowner/FlightOwnerDashboard"
+import SchdeuledFlights from "./components/flightowner/SchdeuledFlights"
+import OwnerLayout from "./components/flightowner/OwnerLayout"
 
 function App() {
 
@@ -10,9 +13,14 @@ function App() {
       <Routes>
         <Route path="/" element={<Login/>}></Route>
         <Route path="/customer" >
-          <Route index path="search" element={<Search />}/>
+          <Route index element={<Search />}/>
           <Route path="flights"/>
         </Route>
+        <Route path="/flightOwner" element={<OwnerLayout/>}>
+          <Route index element={<FlightOwnerDashboard/>} />
+          <Route path="scheduledFlights" element={<SchdeuledFlights/>}/>
+        </Route>
+
       </Routes>
     </BrowserRouter>
 

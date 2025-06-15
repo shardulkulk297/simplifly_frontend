@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import Navbar from './Navbar';
+import { useNavigate } from 'react-router-dom';
 
 const Search = () => {
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
   const [date, setDate] = useState('');
+  const navigate = useNavigate();
 
   const handleSearch = () => {
     if (!origin || !destination || !date) {
@@ -12,6 +14,7 @@ const Search = () => {
       return;
     }
     console.log('Searching flights:', { origin, destination, date });
+    
   };
 
   return (
@@ -21,54 +24,56 @@ const Search = () => {
       <Navbar />
 
       {/* Search Section */}
-      <div className='flex-grow 1 d-flex align-items-center'>
+      <div className='flex-grow-1 d-flex align-items-center'>
         <div className='container text-center py-5'>
-          <h1 className=''>Find Your Perfect Flight</h1>
-          <p className='lead mb-4'>Search and compare flights from hundreds of airlines worldwide with the best prices guaranteed</p>
-          {/* Search Form */}
-          <div className='card mx-auto' style={{ maxWidth: '600px' }}>
-            <div className='card-body'>
-              <div className='row g-3'>
-                <div className='col-md-4'>
-                  <input
-                    type="text"
-                    className='form-control'
-                    placeholder="From"
-                    value={origin}
-                    onChange={(e) => setOrigin(e.target.value)}
-                  />
-                </div>
-                <div className='col-md-4'>
-                  <input
-                    type="text"
-                    className='form-control'
-                    placeholder="To"
-                    value={destination}
-                    onChange={(e) => setDestination(e.target.value)}
-                  />
-                </div>
-                <div className="col-md-4">
-                  <input
-                    type="date"
-                    className="form-control"
-                    value={date}
-                    onChange={e => setDate(e.target.value)}
-                  />
-                </div>
-                <div className="col-12 d-grid">
-                  <button
-                    className="btn btn-primary btn-lg"
-                    onClick={handleSearch}
-                  >
-                    🔍 Search Flights
-                  </button>
+          <div className='shadow bg-light rounded p-10 pb-5 pt-5'>
+            <h1 className=''>Find Your Perfect Flight</h1>
+            <p className='lead mb-4'>Search and compare flights from hundreds of airlines worldwide with the best prices guaranteed</p>
+            {/* Search Form */}
+            <div className='card mx-auto' style={{ maxWidth: '600px' }}>
+              <div className='card-body'>
+                <div className='row g-3'>
+                  <div className='col-md-4'>
+                    <input
+                      type="text"
+                      className='form-control'
+                      placeholder="From"
+                      value={origin}
+                      onChange={(e) => setOrigin(e.target.value)}
+                    />
+                  </div>
+                  <div className='col-md-4'>
+                    <input
+                      type="text"
+                      className='form-control'
+                      placeholder="To"
+                      value={destination}
+                      onChange={(e) => setDestination(e.target.value)}
+                    />
+                  </div>
+                  <div className="col-md-4">
+                    <input
+                      type="date"
+                      className="form-control"
+                      value={date}
+                      onChange={e => setDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="col-12 d-grid">
+                    <button
+                      className="btn btn-primary btn-lg"
+                      onClick={handleSearch}
+                    >
+                      🔍 Search Flights
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
         {/* Features */}
-        <div className='row mt-5 g-4'>
+        <div className='row justify-content-end mt-5 g-1'>
           <div>
             <div>💰</div>
             <h5>Best Prices</h5>

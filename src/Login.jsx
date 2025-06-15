@@ -32,10 +32,11 @@ const Login = () => {
        switch(role){
         case "CUSTOMER":
             // console.log("CUSTOMER DASHBOARD");
-            navigate("/customer/search");
+            navigate("/customer");
             break;
         case "FLIGHTOWNER":
-            console.log("FLIGHTOWNER DASHBOARD");
+            // console.log("FLIGHTOWNER DASHBOARD");
+            navigate("/flightOwner")
             break;
         case "MANAGER":
             console.log("MANAGER DASHBOARD");
