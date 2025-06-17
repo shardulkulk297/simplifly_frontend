@@ -26,7 +26,7 @@ const OwnerLayout = () => {
             </nav>
 
             {/* This is where child routes (nested under /flightOwner) will render */}
-            <div className="container py-4">
+            <div className="container">
                 <Outlet />
             </div>
         </>
