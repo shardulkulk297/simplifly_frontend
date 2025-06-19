@@ -56,12 +56,11 @@ const SchdeuledFlights = () => {
                                     </p>
 
                                     <p className="card-text mb-1">
-                                        <strong>Baggage:</strong> Check‑in {f.baggageCheckin} kg, Cabin {f.baggageCabin}kg
+                                        <strong>Baggage:</strong> Check‑in {f.flight.baggageCheckin} kg, Cabin {f.flight.baggageCabin}kg
                                     </p>
                                     <p className="card-text mb-3">
                                         <strong>Seats:</strong> Total: {f.flight.totalSeats}, First-Class:  {f.flight.firstClassSeats}, Business-Class:  {f.flight.businessClassSeats}
                                     </p>
-
                                     <p className="card-text">
                                         <strong>Fare:</strong> {f.fare}₹
                                     </p>

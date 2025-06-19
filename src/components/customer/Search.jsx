@@ -1,27 +1,53 @@
 import React, { useState } from 'react'
 import Navbar from './Navbar';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 const Search = () => {
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
   const [date, setDate] = useState('');
+  const [trip, setTrip] = useState('');
+
   const navigate = useNavigate();
 
-  const handleSearch = () => {
+  const handleSearch = (e) => {
+    
     if (!origin || !destination || !date) {
       alert('Please fill in all fields');
       return;
     }
     console.log('Searching flights:', { origin, destination, date });
+
+ 
+      const getOneWayFlights = async () => {
+        try {
+          const response = await axios.get("http://localhost:8080/api/flight/schedule/search", {
+            params: {
+              origin,
+              destination,
+              date
+            }
+          });
+          console.log(response.data);
+          navigate("/customer/search-results", { state: { flights: response.data } });
+
+        } catch (error) {
+          console.log(error);
+        }
+
+      }
+      getOneWayFlights();
+
     
+
   };
 
   return (
     <div className='d-flex flex-column min-vh-100 bg-light'>
       {/* Header */}
 
-      <Navbar />
+
 
       {/* Search Section */}
       <div className='flex-grow-1 d-flex align-items-center'>
@@ -51,11 +77,35 @@ const Search = () => {
                       onChange={(e) => setDestination(e.target.value)}
                     />
                   </div>
+                  <div className='col-md-4'>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio"
+                        name="flexRadioDefault"
+                        id="flexRadioDefault1"
+                        onChange={(e) => setTrip(e.target.value)}
+                      />
+                      <label class="form-check-label" for="flexRadioDefault1">
+                        Return
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="flexRadioDefault"
+                        id="flexRadioDefault2"
+                        onChange={(e) => setTrip(e.target.value)}
+                      />
+                      <label class="form-check-label" for="flexRadioDefault2">
+                        One-way
+                      </label>
+                    </div>
+
+                  </div>
                   <div className="col-md-4">
+                    <label htmlFor="">Date Of Departure</label>
                     <input
                       type="date"
                       className="form-control"
                       value={date}
+                      placeholder='Departure Date'
                       onChange={e => setDate(e.target.value)}
                     />
                   </div>

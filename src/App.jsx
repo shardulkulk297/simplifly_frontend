@@ -8,6 +8,8 @@ import CreateSchedule from "./components/flightowner/CreateSchedule"
 import AddFlights from "./components/flightowner/AddFlights"
 import AddRoutes from "./components/flightowner/AddRoutes"
 import { Toaster } from "react-hot-toast"
+import SearchResults from "./components/customer/SearchResults"
+import CustomerLayout from "./components/customer/CustomerLayout"
 
 function App() {
 
@@ -17,8 +19,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login/>}></Route>
-        <Route path="/customer" >
+        <Route path="/customer" element={<CustomerLayout/>}>
           <Route index element={<Search />}/>
+          <Route path="search-results" element={<SearchResults/>}/>
           <Route path="flights"/>
         </Route>
         <Route path="/flightOwner" element={<OwnerLayout/>}>
@@ -28,7 +31,6 @@ function App() {
           <Route path="new-flight" element={<AddFlights/>} />
           <Route path="new-route" element={<AddRoutes />}/>
         </Route>
-
       </Routes>
     </BrowserRouter>
     </>

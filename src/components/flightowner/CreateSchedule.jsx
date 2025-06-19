@@ -48,7 +48,7 @@ const CreateSchedule = () => {
             );
 
             console.log(response.data);
-            toast.success("Flight "+ response.data.flight.flightNumber + " Scheduled Successfully!!");
+            toast.success("Flight " + response.data.flight.flightNumber + " Scheduled Successfully!!");
 
         } catch (error) {
             console.log(error);
@@ -56,14 +56,18 @@ const CreateSchedule = () => {
     }
 
     return (
-        <div className="container-fluid min-vh-100 d-flex justify-content-center align-items-center">
+        <div className='container-fluid min-vh-100 py-5'>
+            <h1>Schedule your Flights 📅</h1>
+        <div className="d-flex justify-content-center align-items-center">
+             
             <div className="w-100" style={{ maxWidth: "500px" }}>
+               
                 <div className="d-flex justify-content-center gap-3 mb-3">
                     <Link to="/flightOwner/new-flight" className="btn btn-outline-primary">
                         Add Flight
                     </Link>
                 </div>
-                <h1 className="text-center mb-4">Create Schedule</h1>
+
                 <div className='card'>
                     <div className='card-body'>
                         <form onSubmit={handleSubmit}>
@@ -115,6 +119,7 @@ const CreateSchedule = () => {
                 </div>
 
             </div>
+        </div>
         </div>
 
     )
