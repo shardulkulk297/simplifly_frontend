@@ -1,24 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import OwnerLayout from './OwnerLayout'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
+import { fetchLoggedInUser } from '../../store/action/UserInfoAction';
+import { useDispatch, useSelector } from 'react-redux';
 const FlightOwnerDashboard = () => {
     const [companyName, setCompanyName] = useState();
+    const dispatch = useDispatch();
+    const loggedInUser = useSelector(state=>state.UserInfo.loggedInUser)
     useEffect(() => {
-        const getName = async () => {
-            try {
-                let token = localStorage.getItem('token');
-                let details = await axios.get('http://localhost:8080/api/user/getLoggedInUserDetails', {
-                    headers: { "Authorization": "Bearer " + token }
-                }
-                )
-                console.log(details)
-                let name = details.data.companyName;
-                setCompanyName(name);
-
-            } catch (error) {
-                console.log(error);
-            }
+        const getName = async () => {     
+            fetchLoggedInUser(dispatch)
         }
         getName();
 
@@ -29,7 +21,7 @@ const FlightOwnerDashboard = () => {
             {/* Header: title + status button */}
             <div className="d-flex justify-content-between align-items-center mb-5">
                 <div>
-                    <h1>Welcome, {companyName}🧑‍✈️</h1>
+                    <h1>Welcome, {loggedInUser.companyName}🧑‍✈️</h1>
                     <br />
                     <div>
                         <h2 className="fw-bold mb-0">Manage your Flights🌍</h2>

@@ -2,24 +2,29 @@ import React, { useState } from 'react'
 import Navbar from './Navbar';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { searchFlights } from '../../store/action/FlightAction';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Search = () => {
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
   const [date, setDate] = useState('');
   const [trip, setTrip] = useState('');
-
+  const [returnDate, setReturnDate] = useState('');
+  const [mainFlights, setMainFlights] = useState([]);
+  const [returnFlights, setReturnFlights] = useState([]);
   const navigate = useNavigate();
+  
 
   const handleSearch = (e) => {
-    
+  
     if (!origin || !destination || !date) {
-      alert('Please fill in all fields');
+      toast.error('Please fill in all fields');
       return;
     }
     console.log('Searching flights:', { origin, destination, date });
 
- 
+      // if(!returnDate){
       const getOneWayFlights = async () => {
         try {
           const response = await axios.get("http://localhost:8080/api/flight/schedule/search", {
@@ -35,9 +40,22 @@ const Search = () => {
         } catch (error) {
           console.log(error);
         }
+        
+        navigate("/customer/search-results", { state: { flights: response.data } });
 
       }
       getOneWayFlights();
+    // }
+    // else{
+    //   const getOneWayAndReturnFlights = async()=>{
+    //     try {
+          
+    //     } catch (error) {
+          
+    //     }
+
+    //   }
+    // }
 
     
 
@@ -101,6 +119,16 @@ const Search = () => {
                   </div>
                   <div className="col-md-4">
                     <label htmlFor="">Date Of Departure</label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      value={date}
+                      placeholder='Departure Date'
+                      onChange={e => setDate(e.target.value)}
+                    />
+                  </div>
+                    <div className="col-md-4">
+                    <label htmlFor="">Return</label>
                     <input
                       type="date"
                       className="form-control"

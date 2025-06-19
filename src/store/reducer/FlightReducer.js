@@ -11,6 +11,22 @@ const FlightReducer = (state = initialState, action) =>{
         }
 
     }
+
+
+    if(action.type === "SEARCH_FLIGHTS"){
+        return {
+            ...state,
+            flights: action.payload
+        }
+    }
+
+    if(action.type === "GET_OWNER_FLIGHTS"){
+        return {
+            ...state,
+            flights: action.payload
+        }
+    }
+
     return state;
 }
 

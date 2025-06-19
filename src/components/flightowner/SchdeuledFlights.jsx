@@ -2,42 +2,24 @@ import React, { useEffect, useState } from 'react'
 import OwnerLayout from './OwnerLayout'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getOwnerFlights } from '../../store/action/FlightAction';
+import { useDispatch, useSelector } from 'react-redux';
 
 const SchdeuledFlights = () => {
 
-    const [flights, setFlights] = useState([]);
+    const flights = useSelector(state=>state.allFlights.flights);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    
     useEffect(() => {
         const getFlights = async () => {
-
-            try {
-                const token = localStorage.getItem('token');
-
-                if (token) {
-                    console.log(token);
-                    const response = await axios.get("http://localhost:8080/api/flight/schedule/getAll", {
-                        headers: { 'Authorization': "Bearer " + localStorage.getItem('token') }
-                    })
-                    console.log(response.data);
-                    setFlights(response.data);
-
-                }
-                else {
-                    navigate("/")
-                }
-
-            }
-            catch (err) {
-                console.log(err);
-            }
-
-
+            getOwnerFlights(dispatch);
         }
         getFlights();
     }, [])
 
     return (
-        <div className='container'>
+        <div className='container py-5'>
             <div className='row'>
                 {
                     flights.map((f, index) =>

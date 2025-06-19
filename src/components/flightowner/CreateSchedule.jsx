@@ -28,7 +28,7 @@ const CreateSchedule = () => {
         // console.log(arrivalTime);
         // console.log(fare);
         try {
-            const payload = {
+            const data = {
                 flight: selectedFlight,
                 departureTime,
                 arrivalTime,
@@ -43,7 +43,7 @@ const CreateSchedule = () => {
 
             const response = await axios.post(
                 'http://localhost:8080/api/flight/schedule/add',
-                payload,
+                data,
                 config
             );
 
