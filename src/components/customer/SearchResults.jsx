@@ -10,9 +10,9 @@ const SearchResults = () => {
         return null;
     }
 
-    const { flights } = state;
+    const { flights, returnFlights = [], trip } = state || {};
 
-       const formatDateTime = (dateTimeString) => {
+    const formatDateTime = (dateTimeString) => {
         const date = new Date(dateTimeString);
         const dateOptions = {
             weekday: 'short',
@@ -30,6 +30,16 @@ const SearchResults = () => {
             time: date.toLocaleTimeString('en-US', timeOptions)
         };
     };
+
+    if (flights.length === 0 && (trip === "Round" ? returnFlights.length === 0 : true)) {
+        return (
+            <div className="container mt-5">
+                <div className="alert alert-warning text-center">
+                    No {trip === "Round" ? "outbound or return" : "flights"} available.
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className='container-fluid py-4'>
@@ -85,7 +95,7 @@ const SearchResults = () => {
                     <div className="d-flex justify-content-between align-items-center mb-3">
                         <h4 className="mb-0">
                             <i className="fas fa-plane me-2 text-primary"></i>
-                            Available Flights ({flights.length})
+                            {trip === "Round" ? `Available Flights (${flights.length}) & Return Flights (${returnFlights.length})` : `Available Flights (${flights.length}) `}
                         </h4>
                         <div className="dropdown">
                             <button className="btn btn-outline-secondary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown">
@@ -115,11 +125,13 @@ const SearchResults = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {flights.map((f, index) => {
+
+                                {flights.length !== 0 ? flights.map((f, index) => {
                                     const departure = formatDateTime(f.departureTime);
                                     const arrival = formatDateTime(f.arrivalTime);
 
                                     return (
+
                                         <tr key={index} className="align-middle">
                                             <td>
                                                 <div className="fw-bold text-primary">{f.flight.owner.companyName} {f.flight.flightNumber}</div>
@@ -160,13 +172,84 @@ const SearchResults = () => {
                                             </td>
                                         </tr>
                                     );
-                                })}
+                                }) : <div className='container py-5'>
+                                    <div className='card card-body bg-danger text-center'>
+                                        <h5>No Flights Available for this route</h5>
+                                    </div>
+                                </div>
+                                }
+                                {trip == "Round" &&
+                                    (
+                                        <>
+                                            <tr>
+                                                <td colSpan="7" className="bg-light text-center py-2">
+                                                    <h5 className="mb-0 text-primary">Return Flights</h5>
+                                                </td>
+                                            </tr>
+                                            {returnFlights.length > 0 ?
+                                                returnFlights.map((f, index) => {
+                                                    const departure = formatDateTime(f.departureTime);
+                                                    const arrival = formatDateTime(f.arrivalTime);
+
+                                                    return (
+                                                        <tr key={index} className="align-middle">
+                                                            <td>
+                                                                <div className="fw-bold text-primary">{f.flight.owner.companyName} {f.flight.flightNumber}</div>
+                                                                <small className="text-muted">
+                                                                    {f.flight.totalSeats} seats |
+                                                                    {f.flight.baggageCheckin}kg check-in
+                                                                </small>
+                                                            </td>
+                                                            <td>
+                                                                <div className="d-flex align-items-center">
+                                                                    <span className="badge bg-secondary me-2">{f.flight.route.origin}</span>
+                                                                    <i className="fas fa-arrow-right text-muted mx-1"></i>
+                                                                    <span className="badge bg-secondary ms-2">{f.flight.route.destination}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div className="fw-bold">{departure.time}</div>
+                                                                <small className="text-muted">{departure.date}</small>
+                                                            </td>
+                                                            <td>
+                                                                <div className="fw-bold">{arrival.time}</div>
+                                                                <small className="text-muted">{arrival.date}</small>
+                                                            </td>
+                                                            <td>
+                                                                <span className="badge bg-info text-dark">{f.flight.route.duration}</span>
+                                                            </td>
+                                                            <td>
+                                                                <div className="fw-bold text-success fs-5">₹{f.fare.toLocaleString()}</div>
+                                                                <small className="text-muted">per person</small>
+                                                            </td>
+                                                            <td>
+                                                                <button className="btn btn-primary btn-sm px-3">
+                                                                    Book
+                                                                </button>
+                                                                <button className="btn btn-outline-secondary btn-sm ms-1" data-bs-toggle="collapse" data-bs-target={`#details-${index}`}>
+                                                                    <i className="fas fa-info-circle">View Details</i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                }) : (
+                                                    <tr>
+                                                        <td colSpan="7" className="text-center py-4">
+                                                            <div className="alert alert-warning mb-0">
+                                                                No return flights available for this route
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            }
+                                        </>
+                                        /* render your return‐flights table here */
+                                    )}
                             </tbody>
                         </table>
                     </div>
-
                     {/* Expandable Details Rows */}
-                    {flights.map((f, index) => (
+                    {flights.length> 0 && flights.map((f, index) => (
                         <div key={`details-${index}`} className="collapse" id={`details-${index}`}>
                             <div className="card card-body bg-light mb-3">
                                 <div className="row">
@@ -189,6 +272,36 @@ const SearchResults = () => {
                             </div>
                         </div>
                     ))}
+                    {trip == "round" > 0 && returnFlights.length > 0 && (
+                        <div>
+                            {returnFlights.map((f, index) => (
+                                <div key={`details-${index}`} className="collapse" id={`details-${index}`}>
+                                    <div className="card card-body bg-light mb-3">
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <h6 className="text-muted">Baggage Allowance</h6>
+                                                <ul className="list-unstyled small">
+                                                    <li>Check-in: <strong>{f.flight.baggageCheckin} kg</strong></li>
+                                                    <li>Cabin: <strong>{f.flight.baggageCabin} kg</strong></li>
+                                                </ul>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <h6 className="text-muted">Seat Information</h6>
+                                                <ul className="list-unstyled small">
+                                                    <li>Total Seats: <strong>{f.flight.totalSeats}</strong></li>
+                                                    <li>First Class: <strong>{f.flight.firstClassSeats}</strong></li>
+                                                    <li>Business Class: <strong>{f.flight.businessClassSeats}</strong></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+
+                        </div>
+                        /* render your return‐flights table here */
+                    )}
+
                 </div>
             </div>
         </div>

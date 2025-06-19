@@ -11,20 +11,19 @@ const Search = () => {
   const [date, setDate] = useState('');
   const [trip, setTrip] = useState('');
   const [returnDate, setReturnDate] = useState('');
-  const [mainFlights, setMainFlights] = useState([]);
-  const [returnFlights, setReturnFlights] = useState([]);
+ 
   const navigate = useNavigate();
-  
+
 
   const handleSearch = (e) => {
-  
+
     if (!origin || !destination || !date) {
       toast.error('Please fill in all fields');
       return;
     }
     console.log('Searching flights:', { origin, destination, date });
 
-      // if(!returnDate){
+    if (!returnDate & trip !== "Round") {
       const getOneWayFlights = async () => {
         try {
           const response = await axios.get("http://localhost:8080/api/flight/schedule/search", {
@@ -40,33 +39,45 @@ const Search = () => {
         } catch (error) {
           console.log(error);
         }
-        
-        navigate("/customer/search-results", { state: { flights: response.data } });
+
+        navigate("/customer/search-results", { state: { flights: response.data, trip: trip } });
 
       }
       getOneWayFlights();
-    // }
-    // else{
-    //   const getOneWayAndReturnFlights = async()=>{
-    //     try {
-          
-    //     } catch (error) {
-          
-    //     }
+    }
+    else {
+      const getReturnFlights = async () => {
+        try {
+          const oneWay = await axios.get("http://localhost:8080/api/flight/schedule/search", {
+            params: {
+              origin,
+              destination,
+              date
+            }
+          });
+          console.log(oneWay.data);
 
-    //   }
-    // }
+          const returnFlights = await axios.get("http://localhost:8080/api/flight/schedule/search",{
+            params:{
+              destination,
+              origin, 
+              date
+            }
+          })
+           console.log(returnFlights.data);
+          navigate("/customer/search-results", { state: { flights: oneWay.data, returnFlights: returnFlights.data, trip: trip } });
 
-    
-
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      getReturnFlights()
+    }
   };
 
   return (
     <div className='d-flex flex-column min-vh-100 bg-light'>
       {/* Header */}
-
-
-
       {/* Search Section */}
       <div className='flex-grow-1 d-flex align-items-center'>
         <div className='container text-center py-5'>
@@ -103,7 +114,7 @@ const Search = () => {
                         onChange={(e) => setTrip(e.target.value)}
                       />
                       <label class="form-check-label" for="flexRadioDefault1">
-                        Return
+                        Round
                       </label>
                     </div>
                     <div class="form-check">
@@ -125,16 +136,17 @@ const Search = () => {
                       value={date}
                       placeholder='Departure Date'
                       onChange={e => setDate(e.target.value)}
+                      required
                     />
                   </div>
-                    <div className="col-md-4">
+                  <div className="col-md-4">
                     <label htmlFor="">Return</label>
                     <input
                       type="date"
                       className="form-control"
-                      value={date}
+                      value={returnDate}
                       placeholder='Departure Date'
-                      onChange={e => setDate(e.target.value)}
+                      onChange={e => setReturnDate(e.target.value)}
                     />
                   </div>
                   <div className="col-12 d-grid">
