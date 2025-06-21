@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -7,6 +7,13 @@ const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [msg, setMsg] = useState("");
+
+    useEffect(()=>{
+        const removeToken = ()=>{
+            localStorage.clear();
+        }
+        removeToken();
+    },[])
 
 
     const loginUser = async () => {
