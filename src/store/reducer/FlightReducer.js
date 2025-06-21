@@ -27,6 +27,8 @@ const FlightReducer = (state = initialState, action) =>{
         }
     }
 
+    
+
     return state;
 }
 

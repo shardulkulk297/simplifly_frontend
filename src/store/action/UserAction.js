@@ -1,4 +1,4 @@
-export const getUserDetails = (dispatch)=>(user)=>{
+export const getUserDetails = (dispatch)=(user)=>{
     
     dispatch({
         payload: user,

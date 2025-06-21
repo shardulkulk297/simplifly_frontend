@@ -1,12 +1,16 @@
 import React, { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
+import Sidebar from './Sidebar';
 
 const OwnerLayout = () => {
+    const navigate = useNavigate();
+    
     useEffect(() => {
         let token = localStorage.getItem('token');
         if (token == null || token == undefined || token == "")
             navigate("/")
-    }, []);
+    }, [navigate]);
+
     return (
         <>
             <nav className="navbar navbar-expand-lg navbar-light bg-light shadow">
@@ -25,10 +29,11 @@ const OwnerLayout = () => {
                 </div>
             </nav>
 
-            {/* This is where child routes (nested under /flightOwner) will render */}
-            <div className="container">
-                <Outlet />
-            </div>
+            <Sidebar>
+                <div className="p-4">
+                    <Outlet />
+                </div>
+            </Sidebar>
         </>
     );
 }

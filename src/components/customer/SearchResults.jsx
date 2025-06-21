@@ -1,5 +1,5 @@
 import React from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const SearchResults = () => {
 
@@ -9,6 +9,8 @@ const SearchResults = () => {
         navigate('/customer/search', { replace: true });
         return null;
     }
+
+    const navigate = useNavigate()
 
     const { flights, returnFlights = [], trip } = state || {};
 
@@ -39,6 +41,12 @@ const SearchResults = () => {
                 </div>
             </div>
         );
+    }
+
+    const bookFlights = (scheduleId) =>{
+        
+        navigate("/customer/book", {state: {scheduleId: scheduleId}})
+    
     }
 
     return (
@@ -116,7 +124,8 @@ const SearchResults = () => {
                             <thead className="table-light">
                                 <tr>
                                     <th>Flight</th>
-                                    <th>Route</th>
+                                    <th>Origin</th>
+                                    <th>Destination</th>
                                     <th>Departure</th>
                                     <th>Arrival</th>
                                     <th>Duration</th>
@@ -144,8 +153,15 @@ const SearchResults = () => {
                                                 <div className="d-flex align-items-center">
                                                     <span className="badge bg-secondary me-2">{f.flight.route.origin}</span>
                                                     <i className="fas fa-arrow-right text-muted mx-1"></i>
-                                                    <span className="badge bg-secondary ms-2">{f.flight.route.destination}</span>
+                                                    
                                                 </div>
+                                            </td> 
+                                            <td>
+                                                 <div className="d-flex align-items-center">
+                                                    <span className="badge bg-secondary ms-2">{f.flight.route.destination}</span>
+                                                    <i className="fas fa-arrow-right text-muted mx-1"></i>
+                                                </div>
+                                                
                                             </td>
                                             <td>
                                                 <div className="fw-bold">{departure.time}</div>
@@ -163,7 +179,7 @@ const SearchResults = () => {
                                                 <small className="text-muted">per person</small>
                                             </td>
                                             <td>
-                                                <button className="btn btn-primary btn-sm px-3">
+                                                <button onClick={()=> bookFlights(f.id)} className="btn btn-primary btn-sm px-3">
                                                     Book
                                                 </button>
                                                 <button className="btn btn-outline-secondary btn-sm ms-1" data-bs-toggle="collapse" data-bs-target={`#details-${index}`}>

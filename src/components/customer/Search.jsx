@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { searchFlights } from '../../store/action/FlightAction';
 import { useDispatch, useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
 
 const Search = () => {
   const [origin, setOrigin] = useState('');
@@ -11,7 +12,7 @@ const Search = () => {
   const [date, setDate] = useState('');
   const [trip, setTrip] = useState('');
   const [returnDate, setReturnDate] = useState('');
- 
+
   const navigate = useNavigate();
 
 
@@ -22,6 +23,13 @@ const Search = () => {
       return;
     }
     console.log('Searching flights:', { origin, destination, date });
+
+    const mainDate = new Date()
+
+    if (Math.floor((new Date() - new Date(date)) / 86400000) === 1 && Math.floor((new Date() - new Date(returnDate)) / 86400000) === 1 ) {
+      toast.error("Please Enter the correct date")
+      return;
+    }
 
     if (!returnDate & trip !== "Round") {
       const getOneWayFlights = async () => {
@@ -34,13 +42,11 @@ const Search = () => {
             }
           });
           console.log(response.data);
-          navigate("/customer/search-results", { state: { flights: response.data } });
+          navigate("/customer/search-results", { state: { flights: response.data, trip: trip } });
 
         } catch (error) {
           console.log(error);
         }
-
-        navigate("/customer/search-results", { state: { flights: response.data, trip: trip } });
 
       }
       getOneWayFlights();
@@ -57,14 +63,14 @@ const Search = () => {
           });
           console.log(oneWay.data);
 
-          const returnFlights = await axios.get("http://localhost:8080/api/flight/schedule/search",{
-            params:{
+          const returnFlights = await axios.get("http://localhost:8080/api/flight/schedule/search", {
+            params: {
               destination,
-              origin, 
+              origin,
               date
             }
           })
-           console.log(returnFlights.data);
+          console.log(returnFlights.data);
           navigate("/customer/search-results", { state: { flights: oneWay.data, returnFlights: returnFlights.data, trip: trip } });
 
         } catch (error) {
