@@ -4,19 +4,45 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getOwnerFlights } from '../../store/action/FlightAction';
 import { useDispatch, useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
 
 const SchdeuledFlights = () => {
-
-    const flights = useSelector(state=>state.allFlights.flights);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(true);
+    const flights = useSelector(state=>state.allFlights.flights);
     
     useEffect(() => {
-        const getFlights = async () => {
-            getOwnerFlights(dispatch);
+        const getFlights = async() => {
+            try {
+                setLoading(true);
+                await getOwnerFlights(dispatch);
+                setLoading(false)
+            } catch (error) {
+                console.log(error);
+                setLoading(false);
+            }
         }
         getFlights();
     }, [])
+
+   
+    
+
+    if(loading){
+        return(
+            <div className='container py-5'>
+                <div className='row justify-content-center'>
+                    <div className='col-12 text-center'>
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                        <p className="mt-2">Loading flights...</p>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className='container py-5'>

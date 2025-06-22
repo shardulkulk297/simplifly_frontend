@@ -10,16 +10,10 @@ const ManageRoutes = () => {
     }, [])
     return (
         <div className='container-fluid py-5'>
-
             <h1>Routes🛬</h1>
-
             <div className='row m-10'>
-
                 <div className='col-lg-12'>
-
                     <div className='card card-body'>
-
-
                         <table class="table">
                             <thead>
                                 <tr>
@@ -35,7 +29,7 @@ const ManageRoutes = () => {
                                     routes.map((r, index) => (
                                         <tr key={index}>
                                             <th scope="row">{index}</th>
-                                            <td>{r.origin}</td> {"->"}
+                                            <td>{r.origin}</td> 
                                             <td>{r.destination}</td>
                                             <td>{r.duration}</td>
                                             <td>

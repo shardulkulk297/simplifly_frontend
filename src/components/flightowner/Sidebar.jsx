@@ -1,25 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Sidebar = ({ children }) => {
-  const location = useLocation();
-  
-  const menuItems = [
-    { id: 'dashboard', icon: '🏠', label: 'Dashboard', path: '/flightOwner/dashboard' },
-    { id: 'schedule', icon: '📅', label: 'Schedule Flights', path: '/flightOwner/new-schedule' },
-    { id: 'scheduled', icon: '✈️', label: 'Scheduled Flights', path: '/flightOwner/scheduledFlights' },
-    { id: 'routes', icon: '🗺️', label: 'Manage Routes', path: '/flightOwner/manage-routes' },
-    { id: 'reports', icon: '📊', label: 'Reports', path: '/flightOwner/reports' },
-    { id: 'settings', icon: '🔧', label: 'Settings', path: '/flightOwner/settings' }
-  ];
+  const { pathname } = useLocation();
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) => 
+    pathname === path;
 
   return (
     <div className="d-flex" style={{ minHeight: 'calc(100vh - 76px)' }}>
-      {/* Sidebar */}
-      <div className="bg-light border-end" style={{ width: '280px', minHeight: 'calc(100vh - 76px)' }}>
-        {/* Header */}
+
+      <div className="bg-light border-end position-relative" style={{ width: '280px', minHeight: 'calc(100vh - 76px)' }}>
+   
         <div className="p-3 border-bottom">
           <div className="d-flex align-items-center">
             <div className="bg-primary rounded-circle d-flex align-items-center justify-content-center me-2" 
@@ -33,37 +25,79 @@ const Sidebar = ({ children }) => {
           </div>
         </div>
 
-        {/* Navigation Menu */}
+        
         <nav className="py-2">
-          {menuItems.map((item) => (
+          <div>
             <Link
-              key={item.id}
-              to={item.path}
-              className={`d-block text-decoration-none px-3 py-2 mx-2 rounded ${
-                isActive(item.path)
-                  ? 'bg-primary text-white' 
-                  : 'text-dark'
-              }`}
-              style={{
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive(item.path)) {
-                  e.target.style.backgroundColor = '#f8f9fa';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive(item.path)) {
-                  e.target.style.backgroundColor = 'transparent';
-                }
-              }}
+              to="/flightOwner"
+              className={`d-block text-decoration-none px-3 py-2 mx-2 rounded ${isActive('/flightOwner/dashboard') ? 'bg-primary text-white' : 'text-dark'}`}
             >
               <div className="d-flex align-items-center">
-                <span className="me-3" style={{ fontSize: '18px' }}>{item.icon}</span>
-                <span className="fw-medium">{item.label}</span>
+                <span className="me-3" style={{ fontSize: '18px' }}>🏠</span>
+                <span className="fw-medium">Dashboard</span>
               </div>
             </Link>
-          ))}
+          </div>
+
+          <div>
+            <Link
+              to="/flightOwner/new-schedule"
+              className={`d-block text-decoration-none px-3 py-2 mx-2 rounded ${isActive('/flightOwner/new-schedule') ? 'bg-primary text-white' : 'text-dark'}`}
+            >
+              <div className="d-flex align-items-center">
+                <span className="me-3" style={{ fontSize: '18px' }}>📅</span>
+                <span className="fw-medium">Schedule Flights</span>
+              </div>
+            </Link>
+          </div>
+
+          <div>
+            <Link
+              to="/flightOwner/scheduledFlights"
+              className={`d-block text-decoration-none px-3 py-2 mx-2 rounded ${isActive('/flightOwner/scheduledFlights') ? 'bg-primary text-white' : 'text-dark'}`}
+            >
+              <div className="d-flex align-items-center">
+                <span className="me-3" style={{ fontSize: '18px' }}>✈️</span>
+                <span className="fw-medium">Scheduled Flights</span>
+              </div>
+            </Link>
+          </div>
+
+          <div>
+            <Link
+              to="/flightOwner/manage-routes"
+              className={`d-block text-decoration-none px-3 py-2 mx-2 rounded ${isActive('/flightOwner/manage-routes') ? 'bg-primary text-white' : 'text-dark'}`}
+            >
+              <div className="d-flex align-items-center">
+                <span className="me-3" style={{ fontSize: '18px' }}>🗺️</span>
+                <span className="fw-medium">Manage Routes</span>
+              </div>
+            </Link>
+          </div>
+
+          <div>
+            <Link
+              to="/flightOwner/reports"
+              className={`d-block text-decoration-none px-3 py-2 mx-2 rounded ${isActive('/flightOwner/reports') ? 'bg-primary text-white' : 'text-dark'}`}
+            >
+              <div className="d-flex align-items-center">
+                <span className="me-3" style={{ fontSize: '18px' }}>📊</span>
+                <span className="fw-medium">Reports</span>
+              </div>
+            </Link>
+          </div>
+
+          <div>
+            <Link
+              to="/flightOwner/settings"
+              className={`d-block text-decoration-none px-3 py-2 mx-2 rounded ${isActive('/flightOwner/settings') ? 'bg-primary text-white' : 'text-dark'}`}
+            >
+              <div className="d-flex align-items-center">
+                <span className="me-3" style={{ fontSize: '18px' }}>🔧</span>
+                <span className="fw-medium">Settings</span>
+              </div>
+            </Link>
+          </div>
         </nav>
 
         {/* Bottom Section */}
