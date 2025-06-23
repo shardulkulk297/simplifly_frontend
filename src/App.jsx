@@ -11,9 +11,10 @@ import SearchResults from "./components/customer/SearchResults"
 import CustomerLayout from "./components/customer/CustomerLayout"
 import ManageRoutes from "./components/flightowner/ManageRoutes"
 import BookingPage from "./components/customer/BookingPage"
+import GetBookings from "./components/flightowner/GetBookings"
+import Reports from "./components/flightowner/Reports"
 
 function App() {
-
   return (
     <>
     <Toaster position="top-center"></Toaster>
@@ -31,7 +32,8 @@ function App() {
           <Route path="new-schedule" element={<CreateSchedule />}/>
           <Route path="new-flight" element={<AddFlights/>} />
           <Route path="manage-routes" element = {<ManageRoutes/>}/>
-
+          <Route path="get-bookings" element={<GetBookings />}/>
+          <Route path="reports" element={<Reports/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

@@ -86,15 +86,14 @@ const Sidebar = ({ children }) => {
               </div>
             </Link>
           </div>
-
-          <div>
+           <div>
             <Link
-              to="/flightOwner/settings"
-              className={`d-block text-decoration-none px-3 py-2 mx-2 rounded ${isActive('/flightOwner/settings') ? 'bg-primary text-white' : 'text-dark'}`}
+              to="/flightOwner/get-bookings"
+              className={`d-block text-decoration-none px-3 py-2 mx-2 rounded ${isActive('/flightOwner/get-bookings') ? 'bg-primary text-white' : 'text-dark'}`}
             >
               <div className="d-flex align-items-center">
-                <span className="me-3" style={{ fontSize: '18px' }}>🔧</span>
-                <span className="fw-medium">Settings</span>
+                <span className="me-3" style={{ fontSize: '18px' }}>🎫</span>
+                <span className="fw-medium">Bookings</span>
               </div>
             </Link>
           </div>

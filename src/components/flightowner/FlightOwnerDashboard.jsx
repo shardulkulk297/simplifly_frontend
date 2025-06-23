@@ -4,7 +4,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { fetchLoggedInUser } from '../../store/action/UserInfoAction';
 import { useDispatch, useSelector } from 'react-redux';
-import { getOwnerFlights } from '../../store/action/FlightAction';
+import { fetchAllFlights, getOwnerFlights } from '../../store/action/FlightAction';
+import { getAllSchedules } from '../../store/action/ScheduleAction';
+import GetBookings from './GetBookings';
 
 const FlightOwnerDashboard = () => {
     const navigate = useNavigate();
@@ -15,16 +17,12 @@ const FlightOwnerDashboard = () => {
 
     const [loading, setLoading] = useState(true);
     const flights = useSelector(state => state.allFlights.flights);
-
-    const [dashboardStats, setDashboardStats] = useState({
-        totalScheduledFlights: 42,
-        totalFlights: 156,
-        averageBookings: 78
-    });
+    const schedules = useSelector(state => state.schedules.schedules);
 
     useEffect(() => {
         const getName = async () => {
             fetchLoggedInUser(dispatch)
+         
         }
         getName();
     }, [])
@@ -34,7 +32,7 @@ const FlightOwnerDashboard = () => {
         const getFlights = async () => {
             try {
                 setLoading(true);
-                await getOwnerFlights(dispatch);
+                await fetchAllFlights(dispatch);
                 setLoading(false)
             } catch (error) {
                 console.log(error);
@@ -42,8 +40,26 @@ const FlightOwnerDashboard = () => {
             }
         }
         getFlights();
+
+       
     }, [])
 
+    useEffect(()=>{
+        const getSchedules = async()=>{
+                try {
+                setLoading(true);
+                await getAllSchedules(dispatch);
+                setLoading(false)
+            } catch (error) {
+                console.log(error);
+                setLoading(false);
+            }
+
+        }
+        getSchedules();
+    },[])
+
+   
 
     if (loading) {
         return (
@@ -65,7 +81,7 @@ const FlightOwnerDashboard = () => {
     */
 
     const today = new Date().toISOString().split('T')[0];
-    const todaysFlights = flights.filter((f) => {
+    const todaysFlights = schedules.filter((f) => {
         return f.departureTime.startsWith(today);
     })
 
@@ -86,15 +102,15 @@ const FlightOwnerDashboard = () => {
                 <div className="col-md-4">
                     <div className="card border-0 shadow-sm h-100">
                         <div className="card-body text-center">
-                            <h3 className="fw-bold text-primary">{dashboardStats.totalScheduledFlights}</h3>
-                            <p className="text-muted mb-0">Scheduled Flights</p>
+                            <h3 className="fw-bold text-primary">{schedules.length}</h3>
+                            <p className="text-muted mb-0">Total Flights in Schedule</p>
                         </div>
                     </div>
                 </div>
                 <div className="col-md-4">
                     <div className="card border-0 shadow-sm h-100">
                         <div className="card-body text-center">
-                            <h3 className="fw-bold text-primary">{dashboardStats.totalFlights}</h3>
+                            <h3 className="fw-bold text-primary">{flights.length}</h3>
                             <p className="text-muted mb-0">Total Flights</p>
                         </div>
                     </div>
@@ -102,7 +118,7 @@ const FlightOwnerDashboard = () => {
                 <div className="col-md-4">
                     <div className="card border-0 shadow-sm h-100">
                         <div className="card-body text-center">
-                            <h3 className="fw-bold text-primary">{dashboardStats.averageBookings}%</h3>
+                            <h3 className="fw-bold text-primary">50%</h3>
                             <p className="text-muted mb-0">Average Bookings</p>
                         </div>
                     </div>
@@ -140,12 +156,13 @@ const FlightOwnerDashboard = () => {
                                             <p className="card-text">
                                                 <strong>Fare:</strong> {f.fare}₹
                                             </p>
-                                            <button className="btn btn-outline-primary btn-lg">
+                                            <button className="btn btn-outline-primary ">
                                                 Edit
                                             </button>
-                                            <button className="btn btn-danger btn-lg m-2">
+                                            <button className="btn btn-danger  m-2">
                                                 Delete
                                             </button>
+                                            <button className='btn btn-primary' onClick={<GetBookings />}>View Bookings</button>
                                         </div>
                                     </div>
                                 </div>

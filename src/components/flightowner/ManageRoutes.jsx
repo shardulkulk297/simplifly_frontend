@@ -18,7 +18,7 @@ const ManageRoutes = () => {
                             <thead>
                                 <tr>
                                     <th scope="col">RouteId</th>
-                                    <th scope="col">Origin</th> {"->"}
+                                    <th scope="col">Origin</th> 
                                     <th scope="col">Destination</th>
                                     <th scope="col">Duration</th>
                                     <th scope='col'>Actions</th>
