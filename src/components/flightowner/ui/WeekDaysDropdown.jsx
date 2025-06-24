@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-const WeekdaysDropdown = () => {
-    const [selectedDays, setSelectedDays] = useState([]);
+const WeekdaysDropdown = ({ selectedDays, setSelectedDays }) => {
     
     const weekdays = [
         { value: 'monday', label: 'Monday' },

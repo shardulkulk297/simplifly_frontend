@@ -11,9 +11,9 @@ const CreateSchedule = () => {
     const [departureTime, setDepartureTime] = useState("");
     const [arrivalTime, setArrivalTime] = useState("");
     const [fare, setFare] = useState(0);
-    const [freeMeal, setFreeMeal] = useState(false);
-    const [mealAvailable, setMealAvailable] = useState(false);
-    const [isWifiAvaiable, setWifiAvailble] = useState(false);
+    const [freeMeal, setFreeMeal] = useState("No");
+    const [mealAvailable, setMealAvailable] = useState("No");
+    const [isWifiAvailable, setWifiAvailable] = useState("No");
     const [operatingDays, setOperatingDays] = useState([]);
     const [startDate, setStartDate] = useState("")
     const [endDate, setEndDate] = useState("")
@@ -64,12 +64,15 @@ const CreateSchedule = () => {
         try {
             const data = {
                 flight: selectedFlight,
-                departureTime,
-                arrivalTime,
-                fare,
-                isWifiAvaiable,
-                freeMeal,
-
+                departureTime: departureTime,
+                arrivalTime: arrivalTime,
+                startDate: startDate,
+                endDate: endDate,
+                operatingDays: operatingDays.map(d => d.toUpperCase()),
+                fare: parseFloat(fare),
+                isWifiAvailable: isWifiAvailable,
+                freeMeal: freeMeal,
+                mealAvailable: mealAvailable
             };
 
             const config = {
@@ -86,9 +89,25 @@ const CreateSchedule = () => {
 
             console.log(response.data);
             toast.success("Flight " + response.data.flight.flightNumber + " Scheduled Successfully!!");
+            setSelectedFlight(null);
+            setDepartureTime("");
+            setArrivalTime("");
+            setFare(0);
+            setFreeMeal("");
+            setMealAvailable("");
+            setWifiAvailable("");
+            setOperatingDays([]);
+            setStartDate("");
+            setEndDate("");
 
         } catch (error) {
-            console.log(error);
+            if (error.response) {
+                console.error('STATUS:', error.response.status);
+                console.error('HEADERS:', error.response.headers);
+                console.error('BODY:', error.response.data);
+            } else {
+                console.error(error);
+            }
         }
     }
 
@@ -139,11 +158,15 @@ const CreateSchedule = () => {
                                 </div>
                                 <div>
                                     <label htmlFor="" className="form-label">Start Date of Schedule</label>
-                                    <input type="date" className='form-control' onChange={(e) => setStartDate(e.target.value)} />
+                                    <input type="date" className='form-control'
+                                        min={new Date().toISOString().split('T')[0]}
+                                        onChange={(e) => setStartDate(e.target.value)} />
                                 </div>
                                 <div>
                                     <label htmlFor="" className="form-label">End Date of the Schedule</label>
-                                    <input type="date" className='form-control' onChange={(e) => setEndDate(e.target.value)} />
+                                    <input type="date" className='form-control'
+                                        min={startDate || new Date().toISOString().split('T')[0]}
+                                        onChange={(e) => setEndDate(e.target.value)} />
                                 </div>
                                 <div>
                                     <WeekdaysDropdown className="form-label"
@@ -156,22 +179,22 @@ const CreateSchedule = () => {
                                     <div className="col-12 col-md-6">
                                         <div className="mb-3">
                                             <label className="form-label">Wifi Available</label>
-                                            <select
+                                            <select value={isWifiAvailable}
                                                 className="form-select"
                                                 onChange={e => setWifiAvailable(e.target.value)}
                                             >
-                                                <option value={true}>Yes</option>
-                                                <option value={false}>No</option>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
                                             </select>
                                         </div>
                                         <div className="mb-3">
                                             <label className="form-label">Free Meal</label>
-                                            <select
+                                            <select value={freeMeal}
                                                 className="form-select"
                                                 onChange={e => setFreeMeal(e.target.value)}
                                             >
-                                                <option value={true}>Yes</option>
-                                                <option value={false}>No</option>
+                                               <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
                                             </select>
                                         </div>
                                     </div>
@@ -180,16 +203,16 @@ const CreateSchedule = () => {
                                     <div className="col-12 col-md-6">
                                         <div className="mb-3">
                                             <label className="form-label">Meal Available</label>
-                                            <select
+                                            <select value={mealAvailable}
                                                 className="form-select"
                                                 onChange={e => setMealAvailable(e.target.value)}
                                             >
-                                                <option value={true}>Yes</option>
-                                                <option value={false}>No</option>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
                                             </select>
                                         </div>
                                         <div className="mb-3">
-                                            <label className="form-label">Fare</label>
+                                            <label className="form-label">Fare💵</label>
                                             <input
                                                 type="number"
                                                 className="form-control"
