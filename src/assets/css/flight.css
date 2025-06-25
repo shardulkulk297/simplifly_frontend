@@ -1,0 +1,8 @@
+.table-responsive {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+}
+.fix-overflow {
+  position: static !important;
+  overflow: visible !important;
+}

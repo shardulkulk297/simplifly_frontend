@@ -6,6 +6,7 @@ import { fetchAllFlights, getOwnerFlights } from '../../store/action/FlightActio
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import WeekdaysDropdown from './ui/WeekDaysDropdown'
+import "../../assets/css/flight.css"
 import { getAllSchedules } from '../../store/action/ScheduleAction';
 const SchdeuledFlights = () => {
     const navigate = useNavigate();
@@ -65,8 +66,8 @@ const SchdeuledFlights = () => {
         <div className='container py-4'>
             <h1 className='text-center mb-4'>All Scheduled Flights ✈️📅</h1>
 
-            <div className="table-responsive">
-                <table className="table table-striped table-hover">
+            <div className="table-responsive fix-overflow">
+                <table className="table table-striped table-hover ">
                     <thead className="table-primary">
                         <tr>
                             <th>Flight</th>
@@ -111,8 +112,8 @@ const SchdeuledFlights = () => {
                                 <td>
                                     <div className="d-flex">
                                         {/* Actions Dropdown */}
-                                        <div className="dropdown">
-                                            <button className="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <div className="dropdown" data-bs-boundary="viewport">
+                                            <button className="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-container="body"  data-bs-display="static"  data-bs-toggle="dropdown"  aria-expanded="false">
                                                 Actions
                                             </button>
                                             <ul className="dropdown-menu">
@@ -356,8 +357,8 @@ const SchdeuledFlights = () => {
 
                                                 </div>
                                                 <div className='d-flex justify-content-center align-items-center m-2'>
-                                                    <button type='submit' className='btn btn-primary' onClick={(e)=> handleUpdate(e)}>Update Schedule</button>
-                                                    <button className='btn btn-primary' onClick={() => setEditSchedule(null)}>Cancel</button>
+                                                    <button type='submit' className='btn btn-primary m-2' onClick={(e)=> handleUpdate(e)}>Update</button>
+                                                    <button className='btn btn-secondary m-2' onClick={() => setEditSchedule(null)}>Cancel</button>
                                                 </div>
 
                                                 <div>
