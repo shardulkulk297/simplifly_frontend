@@ -15,49 +15,48 @@ const FlightOwnerDashboard = () => {
 
     const loggedInUser = useSelector(state => state.UserInfo.loggedInUser)
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const flights = useSelector(state => state.allFlights.flights);
     const schedules = useSelector(state => state.schedules.schedules);
 
     useEffect(() => {
         const getName = async () => {
             fetchLoggedInUser(dispatch)
-         
         }
         getName();
     }, [])
 
 
-    useEffect(() => {
-        const getFlights = async () => {
-            try {
-                setLoading(true);
-                await fetchAllFlights(dispatch);
-                setLoading(false)
-            } catch (error) {
-                console.log(error);
-                setLoading(false);
-            }
-        }
-        getFlights();
+    // useEffect(() => {
+    //     const getFlights = async () => {
+    //         try {
+    //             setLoading(true);
+    //             await fetchAllFlights(dispatch);
+    //             setLoading(false)
+    //         } catch (error) {
+    //             console.log(error);
+    //             setLoading(false);
+    //         }
+    //     }
+    //     getFlights();
 
        
-    }, [])
+    // }, [])
 
-    useEffect(()=>{
-        const getSchedules = async()=>{
-                try {
-                setLoading(true);
-                await getAllSchedules(dispatch);
-                setLoading(false)
-            } catch (error) {
-                console.log(error);
-                setLoading(false);
-            }
+    // useEffect(()=>{
+    //     const getSchedules = async()=>{
+    //             try {
+    //             setLoading(true);
+    //             await getAllSchedules(dispatch);
+    //             setLoading(false)
+    //         } catch (error) {
+    //             console.log(error);
+    //             setLoading(false);
+    //         }
 
-        }
-        getSchedules();
-    },[])
+    //     }
+    //     getSchedules();
+    // },[])
 
    
 

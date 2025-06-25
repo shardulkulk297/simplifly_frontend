@@ -17,23 +17,11 @@ const CreateSchedule = () => {
     const [operatingDays, setOperatingDays] = useState([]);
     const [startDate, setStartDate] = useState("")
     const [endDate, setEndDate] = useState("")
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const flights = useSelector(state => state.allFlights.flights);
     const dispatch = useDispatch()
-    useEffect(() => {
-        const fetchFlights = async () => {
-            try {
-                setLoading(true);
-                await fetchAllFlights(dispatch);
-                setLoading(false);
-            } catch (error) {
-                console.log(error);
-                setLoading(false);
-            }
-        }
-        fetchFlights();
-    }, [])
+   
 
     if (loading) {
         return (

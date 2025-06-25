@@ -1,26 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const WeekdaysDropdown = ({ selectedDays, setSelectedDays }) => {
-    
+const WeekdaysDropdown = ({ selectedDays = [], setSelectedDays }) => {
     const weekdays = [
-        { value: 'monday', label: 'Monday' },
-        { value: 'tuesday', label: 'Tuesday' },
-        { value: 'wednesday', label: 'Wednesday' },
-        { value: 'thursday', label: 'Thursday' },
-        { value: 'friday', label: 'Friday' },
-        { value: 'saturday', label: 'Saturday' },
-        { value: 'sunday', label: 'Sunday' }
+        { value: 'Monday', label: 'Monday' },
+        { value: 'Tuesday', label: 'Tuesday' },
+        { value: 'Wednesday', label: 'Wednesday' },
+        { value: 'Thursday', label: 'Thursday' },
+        { value: 'Friday', label: 'Friday' },
+        { value: 'Saturday', label: 'Saturday' },
+        { value: 'Sunday', label: 'Sunday' }
     ];
 
+    // Ensure selectedDays is always an array
+    const safeDays = Array.isArray(selectedDays) ? selectedDays : [];
+
     const handleDayChange = (day) => {
-        if (selectedDays.includes(day)) {
+        // Use case-insensitive comparison to be safe
+        const isDaySelected = safeDays.some(d => 
+            d.toLowerCase() === day.toLowerCase()
+        );
+        
+        if (isDaySelected) {
             // Remove day if already selected
-            setSelectedDays(selectedDays.filter(d => d !== day));
+            const newDays = safeDays.filter(d => 
+                d.toLowerCase() !== day.toLowerCase()
+            );
+            setSelectedDays(newDays);
         } else {
             // Add day if not selected
-            setSelectedDays([...selectedDays, day]);
+            setSelectedDays([...safeDays, day]);
         }
     };
+
+    // Helper function to check if day is selected
+    const isDayChecked = (day) => {
+        return safeDays.some(d => d.toLowerCase() === day.toLowerCase());
+    };
+
+    console.log("Selected Days:", selectedDays);
 
     return (
         <div className="mb-3">
@@ -34,9 +51,9 @@ const WeekdaysDropdown = ({ selectedDays, setSelectedDays }) => {
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                 >
-                    {selectedDays.length === 0 
+                    {safeDays.length === 0 
                         ? 'Choose weekdays...' 
-                        : `${selectedDays.length} day(s) selected`
+                        : `${safeDays.length} day(s) selected`
                     }
                 </button>
                 
@@ -49,7 +66,7 @@ const WeekdaysDropdown = ({ selectedDays, setSelectedDays }) => {
                                         className="form-check-input"
                                         type="checkbox"
                                         id={day.value}
-                                        checked={selectedDays.includes(day.value)}
+                                        checked={isDayChecked(day.value)}
                                         onChange={() => handleDayChange(day.value)}
                                     />
                                     <label className="form-check-label" htmlFor={day.value}>
@@ -63,12 +80,12 @@ const WeekdaysDropdown = ({ selectedDays, setSelectedDays }) => {
             </div>
             
             {/* Display selected days */}
-            {selectedDays.length > 0 && (
+            {safeDays.length > 0 && (
                 <div className="mt-2">
                     <small className="text-muted">Selected: </small>
-                    {selectedDays.map((day, index) => (
-                        <span key={day} className="badge bg-primary me-1">
-                            {weekdays.find(w => w.value === day)?.label}
+                    {safeDays.map((day, index) => (
+                        <span key={`${day}-${index}`} className="badge bg-primary me-1">
+                            {weekdays.find(w => w.value.toLowerCase() === day.toLowerCase())?.label || day}
                         </span>
                     ))}
                 </div>
