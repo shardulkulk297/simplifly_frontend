@@ -15,7 +15,7 @@ const OwnerLayout = () => {
             navigate("/")
     }, [navigate]);
     useEffect(() => {
-        const getFlights = async () => {
+        const getFlights =  async() => {
             try {
                 setLoading(true);
                 await fetchAllFlights(dispatch);
@@ -31,7 +31,7 @@ const OwnerLayout = () => {
     }, [])
 
     useEffect(() => {
-        const getSchedules = async () => {
+        const getSchedules = async() => {
             try {
                 setLoading(true);
                 await getAllSchedules(dispatch);

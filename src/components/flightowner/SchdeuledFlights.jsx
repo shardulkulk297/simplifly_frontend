@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { fetchAllFlights, getOwnerFlights } from '../../store/action/FlightAction';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
-import WeekdaysDropdown from './ui/WeekDaysDropdown'
 import "../../assets/css/flight.css"
 import { getAllSchedules } from '../../store/action/ScheduleAction';
 const SchdeuledFlights = () => {
@@ -13,18 +12,15 @@ const SchdeuledFlights = () => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const [editSchedule, setEditSchedule] = useState(null);
-    const [operatingDays, setOperatingDays] = useState([]);
     const flights = useSelector(state => state.schedules.schedules);
     const iFlights = useSelector(state => state.allFlights.flights);
 
-    
-    //Delete function
-    const handleDelete = async (flightId) => {
 
+    //Delete function
+    const handleDelete = async (scheduleId) => {
         try {
-            console.log(flightId);
-            const response = await axios.put(`http://localhost:8080/api/flight/schedule/delete/${flightId}`,
-                { status: "INACTIVE" },
+
+            const response = await axios.delete(`http://localhost:8080/api/flight/schedule/delete/${scheduleId}`,
                 {
 
                     headers: { 'Authorization': "Bearer " + localStorage.getItem('token') }
@@ -36,16 +32,31 @@ const SchdeuledFlights = () => {
             console.log(error);
             toast.error("Error deleting flight try another time");
         }
+        await getAllSchedules(dispatch)
+        await fetchAllFlights(dispatch)
 
+    }
+    //Function too convert the dateTime String to readable format
+    function formatDateTime(dateTimeStr) {
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+        };
+        return new Date(dateTimeStr).toLocaleString(undefined, options);
     }
 
     //updating Schedule
-    const handleUpdate = async(e)=>{
+    const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.put(`http://localhost:8080/api/flight/schedule/update/${editSchedule.id}`,{
+            const response = await axios.put(`http://localhost:8080/api/flight/schedule/update/${editSchedule.id}`, {
                 editSchedule
-            },{
+            }, {
                 headers: { 'Authorization': "Bearer " + localStorage.getItem('token') }
             })
             console.log(response.data);
@@ -54,11 +65,12 @@ const SchdeuledFlights = () => {
 
         } catch (error) {
             console.log(error);
-            
+
         }
+        await getAllSchedules(dispatch)
     }
 
-    
+
 
 
 
@@ -72,8 +84,9 @@ const SchdeuledFlights = () => {
                         <tr>
                             <th>Flight</th>
                             <th>Route</th>
-                            <th>Schedule</th>
                             <th>Fare</th>
+                            <th>Departure</th>
+                            <th>Arrival</th>
                             <th>Seats</th>
                             <th>Actions</th>
                         </tr>
@@ -89,31 +102,28 @@ const SchdeuledFlights = () => {
                                     <br />
                                     <small className="text-muted">Duration: {f.flight.route.duration}</small>
                                 </td>
-                                <td>
-                                    <div>Departure: {f.departureTime}</div>
-                                    <div>Arrival: {f.arrivalTime}</div>
-                                    <div className="mt-1">
-                                        {f.operatingDays.map((day, idx) => (
-                                            <span key={idx} className="badge bg-primary text-white me-1">{day.substring(0, 3)}</span>
-                                        ))}
-                                    </div>
-                                    <small className="text-muted">{f.startDate} to {f.endDate}</small>
-                                </td>
-                                <td>
+                                 <td>
                                     <strong>₹{f.fare}</strong>
                                 </td>
                                 <td>
+                                     <small>
+                                       {formatDateTime(f.departureTime)}
+                                    </small>
+                                </td>
+                                <td>
+                                    <small>
+                                         {formatDateTime(f.arrivalTime)} 
+                                    </small>
+                                </td>
+                                 <td>
                                     Total: {f.flight.totalSeats}
                                     <br />
-                                    <small className="text-muted">
-                                        First: {f.flight.firstClassSeats} | Business: {f.flight.businessClassSeats}
-                                    </small>
                                 </td>
                                 <td>
                                     <div className="d-flex">
                                         {/* Actions Dropdown */}
                                         <div className="dropdown" data-bs-boundary="viewport">
-                                            <button className="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-container="body"  data-bs-display="static"  data-bs-toggle="dropdown"  aria-expanded="false">
+                                            <button className="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-container="body" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
                                                 Actions
                                             </button>
                                             <ul className="dropdown-menu">
@@ -160,14 +170,12 @@ const SchdeuledFlights = () => {
                                                             <p><strong>Flight:</strong> {f.flight.flightNumber}</p>
                                                             <p><strong>Route:</strong> {f.flight.route.origin} → {f.flight.route.destination}</p>
                                                             <p><strong>Duration:</strong> {f.flight.route.duration}</p>
-                                                            <p><strong>Departure:</strong> {f.departureTime}</p>
-                                                            <p><strong>Arrival:</strong> {f.arrivalTime}</p>
+                                                            <p><strong>Departure:</strong> {formatDateTime(f.departureTime)}</p>
+                                                            <p><strong>Arrival:</strong> {formatDateTime(f.arrivalTime)}</p>
                                                         </div>
                                                         <div className="col-md-6">
                                                             <h6>Schedule & Pricing</h6>
-                                                            <p><strong>Start Date:</strong> {f.startDate}</p>
-                                                            <p><strong>End Date:</strong> {f.endDate}</p>
-                                                            <p><strong>Operating Days:</strong> {f.operatingDays.join(', ')}</p>
+
                                                             <p><strong>Fare:</strong> ₹{f.fare}</p>
                                                         </div>
                                                     </div>
@@ -175,9 +183,9 @@ const SchdeuledFlights = () => {
                                                     <div className="row">
                                                         <div className="col-md-6">
                                                             <h6>Perks</h6>
-                                                            <p><strong>Free Meal:</strong> {f.freeMeal ? 'Yes' : 'No'}</p>
-                                                            <p><strong>Meal Available:</strong> {f.mealAvailable ? 'Yes' : 'No'}</p>
-                                                            <p><strong>WiFi:</strong> {f.isWifiAvailbale ? 'Yes' : 'No'}</p>
+                                                            <p><strong>Free Meal:</strong> {f.freeMeal}</p>
+                                                            <p><strong>Meal Available:</strong> {f.mealAvailable}</p>
+                                                            <p><strong>WiFi:</strong> {f.isWifiAvailable}</p>
                                                         </div>
                                                         <div className="col-md-6">
                                                             <h6>Baggage & Seating</h6>
@@ -256,45 +264,23 @@ const SchdeuledFlights = () => {
                                                 </div>
                                                 <div>
                                                     <label htmlFor="" className="form-label">Departure Time:</label>
-                                                    <input type="time" className='form-control' value={editSchedule.departureTime} onChange={(e) => setEditSchedule({
-                                                        ...editSchedule,
-                                                        departureTime: e.target.value
-                                                    })} />
+                                                    <input type="datetime-local" className='form-control'
+                                                        min={new Date().toISOString().slice(0, 16)}
+                                                        value={editSchedule.departureTime} onChange={(e) => setEditSchedule({
+                                                            ...editSchedule,
+                                                            departureTime: e.target.value
+                                                        })} />
                                                 </div>
                                                 <div>
                                                     <label htmlFor="" className="form-label">Arrival Time:</label>
-                                                    <input type="time" className='form-control' value={editSchedule.arrivalTime} onChange={(e) => setEditSchedule({
-                                                        ...editSchedule,
-                                                        arrivalTime: e.target.value
-                                                    })} />
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="" className="form-label">Start Date of Schedule</label>
-                                                    <input type="date" className='form-control' value={editSchedule.startDate}
-                                                        min={new Date().toISOString().split('T')[0]}
-                                                        onChange={(e) => setEditSchedule({
+                                                    <input type="datetime-local" className='form-control'
+                                                        min={editSchedule.departureTime || new Date().toISOString().slice(0, 16)}
+                                                        value={editSchedule.arrivalTime} onChange={(e) => setEditSchedule({
                                                             ...editSchedule,
-                                                            startDate: e.target.value
+                                                            arrivalTime: e.target.value
                                                         })} />
                                                 </div>
-                                                <div>
-                                                    <label htmlFor="" className="form-label">End Date of the Schedule</label>
-                                                    <input type="date" className='form-control' value={editSchedule.endDate}
-                                                        min={editSchedule.startDate || new Date().toISOString().split('T')[0]}
-                                                        onChange={(e) => setEditSchedule({
-                                                            ...editSchedule,
-                                                            endDate: e.target.value
-                                                        })} />
-                                                </div>
-                                                <div>
-                                                    <WeekdaysDropdown
-                                                        selectedDays={editSchedule.operatingDays}
-                                                        setSelectedDays={days=>setEditSchedule({
-                                                            ...editSchedule,
-                                                            operatingDays: days
-                                                        })}
-                                                        className="form-label" />
-                                                </div>
+
                                                 <h6 className='text-center m-3'>Add Perks for the Flight</h6>
                                                 <div className='row g-3' >
                                                     <div className="col-12 col-md-6">
@@ -323,6 +309,13 @@ const SchdeuledFlights = () => {
                                                                 <option value="Yes">Yes</option>
                                                                 <option value="No">No</option>
                                                             </select>
+                                                        </div>
+                                                        <div className="mb-3">
+                                                            <label className="form-label">Business Class Rate</label>
+                                                            <input step="0.1" value={editSchedule.businessClassRate} placeholder=' * original fare will be total seat price' type="Number" className='form-control' onChange={(e) => setEditSchedule({
+                                                                ...editSchedule,
+                                                                businessClassRate: e.target.value
+                                                            })} />
                                                         </div>
                                                     </div>
 
@@ -353,11 +346,18 @@ const SchdeuledFlights = () => {
                                                                 })}
                                                             />
                                                         </div>
+                                                        <div className="mb-3">
+                                                            <label className="form-label" >First Class Rate</label>
+                                                            <input value={editSchedule.firstClassRate} placeholder=' * original fare will be total seat price' step="0.1" type="Number" className='form-control' onChange={(e) => setEditSchedule({
+                                                                ...editSchedule,
+                                                                firstClassRate: e.target.value
+                                                            })} />
+                                                        </div>
                                                     </div>
 
                                                 </div>
                                                 <div className='d-flex justify-content-center align-items-center m-2'>
-                                                    <button type='submit' className='btn btn-primary m-2' onClick={(e)=> handleUpdate(e)}>Update</button>
+                                                    <button type='submit' className='btn btn-primary m-2' onClick={(e) => handleUpdate(e)}>Update</button>
                                                     <button className='btn btn-secondary m-2' onClick={() => setEditSchedule(null)}>Cancel</button>
                                                 </div>
 

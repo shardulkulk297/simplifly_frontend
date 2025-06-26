@@ -4,24 +4,24 @@ import { Link } from 'react-router-dom'
 import { fetchAllFlights } from '../../store/action/FlightAction'
 import axios from 'axios'
 import toast from 'react-hot-toast'
-import WeekdaysDropdown from './ui/WeekDaysDropdown'
+import { getAllSchedules } from '../../store/action/ScheduleAction'
+
 
 const CreateSchedule = () => {
     const [selectedFlight, setSelectedFlight] = useState(null);
     const [departureTime, setDepartureTime] = useState("");
     const [arrivalTime, setArrivalTime] = useState("");
     const [fare, setFare] = useState(0);
-    const [freeMeal, setFreeMeal] = useState("No");
-    const [mealAvailable, setMealAvailable] = useState("No");
-    const [isWifiAvailable, setWifiAvailable] = useState("No");
-    const [operatingDays, setOperatingDays] = useState([]);
-    const [startDate, setStartDate] = useState("")
-    const [endDate, setEndDate] = useState("")
+    const [freeMeal, setFreeMeal] = useState("");
+    const [mealAvailable, setMealAvailable] = useState("");
+    const [isWifiAvailable, setWifiAvailable] = useState("");
     const [loading, setLoading] = useState(false);
+    const [firstClassRate, setFirstClassRate] = useState(0);
+    const [businessClassRate, setBusinessClassRate] = useState(0);
 
     const flights = useSelector(state => state.allFlights.flights);
     const dispatch = useDispatch()
-   
+
 
     if (loading) {
         return (
@@ -54,13 +54,12 @@ const CreateSchedule = () => {
                 flight: selectedFlight,
                 departureTime: departureTime,
                 arrivalTime: arrivalTime,
-                startDate: startDate,
-                endDate: endDate,
-                operatingDays: operatingDays.map(d => d.toUpperCase()),
                 fare: parseFloat(fare),
                 isWifiAvailable: isWifiAvailable,
                 freeMeal: freeMeal,
-                mealAvailable: mealAvailable
+                mealAvailable: mealAvailable,
+                businessClassRate: parseFloat(businessClassRate),
+                firstClassRate: parseFloat(firstClassRate)
             };
 
             const config = {
@@ -84,9 +83,10 @@ const CreateSchedule = () => {
             setFreeMeal("");
             setMealAvailable("");
             setWifiAvailable("");
-            setOperatingDays([]);
-            setStartDate("");
-            setEndDate("");
+    
+
+           
+           await getAllSchedules(dispatch)
 
         } catch (error) {
             if (error.response) {
@@ -97,6 +97,7 @@ const CreateSchedule = () => {
                 console.error(error);
             }
         }
+         
     }
 
     return (
@@ -137,30 +138,16 @@ const CreateSchedule = () => {
 
                                 </div>
                                 <div>
-                                    <label htmlFor="" className="form-label">Departure Time:</label>
-                                    <input type="time" className='form-control' onChange={(e) => setDepartureTime(e.target.value)} />
-                                </div>
-                                <div>
-                                    <label htmlFor="" className="form-label">Arrival Time:</label>
-                                    <input type="time" className='form-control' onChange={(e) => setArrivalTime(e.target.value)} />
-                                </div>
-                                <div>
                                     <label htmlFor="" className="form-label">Start Date of Schedule</label>
-                                    <input type="date" className='form-control'
-                                        min={new Date().toISOString().split('T')[0]}
-                                        onChange={(e) => setStartDate(e.target.value)} />
+                                    <input type="datetime-local" className='form-control'
+                                        min={new Date().toISOString().slice(0, 16)}
+                                        onChange={(e) => setDepartureTime(e.target.value)} />
                                 </div>
                                 <div>
                                     <label htmlFor="" className="form-label">End Date of the Schedule</label>
-                                    <input type="date" className='form-control'
-                                        min={startDate || new Date().toISOString().split('T')[0]}
-                                        onChange={(e) => setEndDate(e.target.value)} />
-                                </div>
-                                <div>
-                                    <WeekdaysDropdown className="form-label"
-                                        selectedDays={operatingDays}
-                                        setSelectedDays={setOperatingDays}
-                                    />
+                                    <input type="datetime-local" className='form-control'
+                                        min={departureTime || new Date().toISOString().slice(0, 16)}
+                                        onChange={(e) => setArrivalTime(e.target.value)} />
                                 </div>
                                 <h6 className='text-center m-3'>Add Perks for the Flight</h6>
                                 <div className='row g-3' >
@@ -181,9 +168,13 @@ const CreateSchedule = () => {
                                                 className="form-select"
                                                 onChange={e => setFreeMeal(e.target.value)}
                                             >
-                                               <option value="Yes">Yes</option>
+                                                <option value="Yes">Yes</option>
                                                 <option value="No">No</option>
                                             </select>
+                                        </div>
+                                        <div className="mb-3">
+                                            <label className="form-label">Business Class Rate</label>
+                                            <input placeholder=' * original fare will be total seat price' type="Number" step="0.1" className='form-control' onChange={(e) => setBusinessClassRate(e.target.value)} />
                                         </div>
                                     </div>
 
@@ -207,6 +198,10 @@ const CreateSchedule = () => {
                                                 value={fare}
                                                 onChange={e => setFare(e.target.value)}
                                             />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label className="form-label" >First Class Rate</label>
+                                            <input placeholder=' * original fare will be total seat price' type="Number" step="0.1" className='form-control' onChange={(e) => setFirstClassRate(e.target.value)} />
                                         </div>
                                     </div>
 

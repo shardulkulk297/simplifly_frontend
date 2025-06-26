@@ -24,41 +24,7 @@ const FlightOwnerDashboard = () => {
             fetchLoggedInUser(dispatch)
         }
         getName();
-    }, [])
-
-
-    // useEffect(() => {
-    //     const getFlights = async () => {
-    //         try {
-    //             setLoading(true);
-    //             await fetchAllFlights(dispatch);
-    //             setLoading(false)
-    //         } catch (error) {
-    //             console.log(error);
-    //             setLoading(false);
-    //         }
-    //     }
-    //     getFlights();
-
-       
-    // }, [])
-
-    // useEffect(()=>{
-    //     const getSchedules = async()=>{
-    //             try {
-    //             setLoading(true);
-    //             await getAllSchedules(dispatch);
-    //             setLoading(false)
-    //         } catch (error) {
-    //             console.log(error);
-    //             setLoading(false);
-    //         }
-
-    //     }
-    //     getSchedules();
-    // },[])
-
-   
+    }, [])   
 
     if (loading) {
         return (
@@ -83,9 +49,6 @@ const FlightOwnerDashboard = () => {
     const todaysFlights = schedules.filter((f) => {
         return f.departureTime.startsWith(today);
     })
-
-
-
 
 
     return (
