@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getRoutes } from '../../store/action/RouteAction';
+import { Link } from 'react-router-dom';
 
 const ManageRoutes = () => {
     const routes = useSelector(state => state.routes.routes)
@@ -10,7 +11,8 @@ const ManageRoutes = () => {
     }, [])
     return (
         <div className='container-fluid py-5'>
-            <h1>Routes🛬</h1>
+            <h1>Routes🛬</h1> 
+            <Link to="/flightOwner/new-route" className="btn btn-outline-primary m-1 mb-2">Add Route</Link>
             <div className='row m-10'>
                 <div className='col-lg-12'>
                     <div className='card card-body'>
@@ -33,7 +35,7 @@ const ManageRoutes = () => {
                                             <td>{r.destination}</td>
                                             <td>{r.duration}</td>
                                             <td>
-                                                <button className='btn btn-primary me-2'>Add Flight</button>
+                                                <Link to="/flightOwner/new-flight" className='btn btn-primary me-2'>Add Flight</Link>
                                             </td>
                                         </tr>
 

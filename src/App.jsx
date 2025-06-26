@@ -13,6 +13,7 @@ import ManageRoutes from "./components/flightowner/ManageRoutes"
 import BookingPage from "./components/customer/BookingPage"
 import GetBookings from "./components/flightowner/GetBookings"
 import Reports from "./components/flightowner/Reports"
+import AddRoute from "./components/flightowner/AddRoute"
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="new-schedule" element={<CreateSchedule />}/>
           <Route path="new-flight" element={<AddFlights/>} />
           <Route path="manage-routes" element = {<ManageRoutes/>}/>
+          <Route path="new-route" element={<AddRoute />}/>
           <Route path="get-bookings" element={<GetBookings />}/>
           <Route path="reports" element={<Reports/>}/>
         </Route>

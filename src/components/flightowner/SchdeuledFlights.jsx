@@ -192,8 +192,8 @@ const SchdeuledFlights = () => {
                                                             <p><strong>Check-in Baggage:</strong> {f.flight.baggageCheckin} kg</p>
                                                             <p><strong>Cabin Baggage:</strong> {f.flight.baggageCabin} kg</p>
                                                             <p><strong>Total Seats:</strong> {f.flight.totalSeats}</p>
-                                                            <p><strong>First Class:</strong> {f.flight.firstClassSeats}</p>
-                                                            <p><strong>Business Class:</strong> {f.flight.businessClassSeats}</p>
+                                                            <p><strong>First Class:</strong> {f.flight.firstClassSeats} Seats</p>
+                                                            <p><strong>Business Class:</strong> {f.flight.businessClassSeats} Seats</p>
                                                         </div>
                                                     </div>
                                                 </div>
