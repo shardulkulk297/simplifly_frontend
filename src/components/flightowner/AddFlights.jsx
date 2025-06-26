@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import toast from 'react-hot-toast';
 import { Route } from 'react-router-dom';
+import { fetchAllFlights } from '../../store/action/FlightAction';
 
 const AddFlights = () => {
     const [flightNumber, setFlightNumber] = useState('');
@@ -13,29 +14,17 @@ const AddFlights = () => {
     const [totalSeats, setTotalSeats] = useState('');
     const [firstClassSeats, setFirstClassSeats] = useState('');
     const [businessClassSeats, setBusinessClassSeats] = useState('');
-
+    const dispatch = useDispatch();
     const handleSubmit = async (e) => {
         e.preventDefault();
         
         try {
-            //Adding route first
             const payload = {
-                origin,
-                destination,
-                duration
-            }
-            const config = {
-                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
-            }
-
-            const addedRoute = await axios.post("http://localhost:8080/api/flight/route/add",
-                payload,
-                config
-            )
-            console.log(addedRoute.data);
-
-            const payload2 = {
-                route: addedRoute.data,
+                route: {
+                    'origin': origin,
+                    'destination': destination,
+                    'duration': duration
+                },
                 flightNumber,
                 baggageCabin,
                 baggageCheckin,
@@ -44,10 +33,13 @@ const AddFlights = () => {
                 businessClassSeats
             }
             const flight = await axios.post("http://localhost:8080/api/flight/add",
-                payload2,
-                config
+                payload,
+                {
+                    headers: {'Authorization': "Bearer " + localStorage.getItem('token')}
+                }
             )
             console.log(flight);
+            await fetchAllFlights(dispatch);
             toast.success("Flight Added Successfully!!")
         } catch (error) {
             console.log(error);

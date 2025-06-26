@@ -2,12 +2,13 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import toast from 'react-hot-toast';
 import { getRoutes } from '../../store/action/RouteAction';
+import { useDispatch } from 'react-redux';
 
 const AddRoute = () => {
     const [origin, setOrigin] = useState('');
     const [destination, setDestination] = useState('');
     const [duration, setDuration] = useState('');
-
+    const dispatch = useDispatch();
     const handleSubmit = async(e)=>{
         e.preventDefault();
         try {
@@ -25,7 +26,7 @@ const AddRoute = () => {
                 config
             )
             
-            await getRoutes()
+            await getRoutes(dispatch)
             toast.success("Added Route Successfully");
             
         } catch (error) {

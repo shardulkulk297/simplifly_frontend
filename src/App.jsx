@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import Search from "./components/customer/Search"
-import Login from "./Login"
+import Login from "./components/Login"
 import FlightOwnerDashboard from "./components/flightowner/FlightOwnerDashboard"
 import SchdeuledFlights from "./components/flightowner/SchdeuledFlights"
 import OwnerLayout from "./components/flightowner/OwnerLayout"
@@ -14,6 +14,7 @@ import BookingPage from "./components/customer/BookingPage"
 import GetBookings from "./components/flightowner/GetBookings"
 import Reports from "./components/flightowner/Reports"
 import AddRoute from "./components/flightowner/AddRoute"
+import Signup from "./components/Signup"
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login/>}></Route>
+        <Route path="/signup" element={<Signup />}></Route>
         <Route path="/customer" element={<CustomerLayout/>}>
           <Route index element={<Search />}/>
           <Route path="search-results" element={<SearchResults/>}/>

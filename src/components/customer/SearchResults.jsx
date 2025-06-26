@@ -1,21 +1,17 @@
 import React from 'react'
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const SearchResults = () => {
 
-    const { state } = useLocation();
-
-    if (!state || !Array.isArray(state.flights)) {
-        navigate('/customer/search', { replace: true });
-        return null;
-    }
 
     const navigate = useNavigate()
-
-    const { flights, returnFlights = [], trip } = state || {};
+    const returnFlights = [];
+    const trip = "one-way"
+    const flights = useSelector(state => state.allFlights.flights);
 
     const formatDateTime = (dateTimeString) => {
-        const date = new Date(dateTimeString);
+        const date = new Date(dateTimeString); 
         const dateOptions = {
             weekday: 'short',
             month: 'short',

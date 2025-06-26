@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -61,15 +61,9 @@ const Login = () => {
         }
     }
     return (
-        <div className="min-vh-100 d-flex align-items-center" style={{
-            background: '#f8f9fa',
-            backgroundAttachment: 'fixed'
-        }}>
+        <div className="min-vh-100 d-flex align-items-center" >
             {/* Overlay for better readability */}
-            <div className="position-absolute w-100 h-100" style={{
-                background: 'rgba(0,0,0,0.1)',
-                zIndex: 1
-            }}></div>
+            <div className="position-absolute w-100 h-100" ></div>
             
             <div className="container position-relative" style={{ zIndex: 2 }}>
                 <div className="row justify-content-center">
@@ -153,20 +147,14 @@ const Login = () => {
                                         Sign In
                                     </button>
                                 </div>
-
-                                <div className="text-center">
-                                    <a href="#" className="text-decoration-none" style={{ color: '#667eea' }}>
-                                        Forgot your password?
-                                    </a>
-                                </div>
                             </div>
 
                             <div className="card-footer bg-transparent border-0 text-center py-4">
                                 <p className="mb-0 text-muted">
                                     Don't have an account? 
-                                    <a href="#" className="text-decoration-none fw-semibold ms-1" style={{ color: '#667eea' }}>
+                                    <Link to="/signup" href="#" className="text-decoration-none fw-semibold ms-1" style={{ color: '#667eea' }}>
                                         Sign Up here
-                                    </a>
+                                    </Link>
                                 </p>
                             </div>
                         </div>

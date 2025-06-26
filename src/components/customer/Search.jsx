@@ -12,7 +12,7 @@ const Search = () => {
   const [date, setDate] = useState('');
   const [trip, setTrip] = useState('');
   const [returnDate, setReturnDate] = useState('');
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
 
@@ -26,56 +26,22 @@ const Search = () => {
 
     const mainDate = new Date()
 
-    if (Math.floor((new Date() - new Date(date)) / 86400000) === 1 && Math.floor((new Date() - new Date(returnDate)) / 86400000) === 1 ) {
-      toast.error("Please Enter the correct date")
-      return;
-    }
-
     if (!returnDate & trip !== "Round") {
       const getOneWayFlights = async () => {
         try {
-          const response = await axios.get("http://localhost:8080/api/flight/schedule/search", {
-            params: {
-              origin,
-              destination,
-              date
-            }
-          });
-          console.log(response.data);
-          navigate("/customer/search-results", { state: { flights: response.data, trip: trip } });
+          await searchFlights(dispatch)(origin, destination, date);
+          navigate("/customer/search-results");
 
         } catch (error) {
+          toast.success("Server Failed to Fetch Flights")
           console.log(error);
         }
-
       }
       getOneWayFlights();
     }
     else {
       const getReturnFlights = async () => {
-        try {
-          const oneWay = await axios.get("http://localhost:8080/api/flight/schedule/search", {
-            params: {
-              origin,
-              destination,
-              date
-            }
-          });
-          console.log(oneWay.data);
-
-          const returnFlights = await axios.get("http://localhost:8080/api/flight/schedule/search", {
-            params: {
-              destination,
-              origin,
-              date
-            }
-          })
-          console.log(returnFlights.data);
-          navigate("/customer/search-results", { state: { flights: oneWay.data, returnFlights: returnFlights.data, trip: trip } });
-
-        } catch (error) {
-          console.log(error);
-        }
+        toast.success("Wait for that logic");
       }
       getReturnFlights()
     }
@@ -113,22 +79,22 @@ const Search = () => {
                     />
                   </div>
                   <div className='col-md-4'>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio"
+                    <div className="form-check">
+                      <input className="form-check-input" type="radio"
                         name="flexRadioDefault"
                         id="flexRadioDefault1"
                         onChange={(e) => setTrip(e.target.value)}
                       />
-                      <label class="form-check-label" for="flexRadioDefault1">
+                      <label className="form-check-label" for="flexRadioDefault1">
                         Round
                       </label>
                     </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault"
+                    <div className="form-check">
+                      <input className="form-check-input" type="radio" name="flexRadioDefault"
                         id="flexRadioDefault2"
                         onChange={(e) => setTrip(e.target.value)}
                       />
-                      <label class="form-check-label" for="flexRadioDefault2">
+                      <label className="form-check-label" for="flexRadioDefault2">
                         One-way
                       </label>
                     </div>
