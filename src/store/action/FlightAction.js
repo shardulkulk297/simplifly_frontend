@@ -1,7 +1,5 @@
 import axios from "axios"
 
-
-
 export const fetchAllFlights = (dispatch) => {
 
     //THis api is for Input select list of flights

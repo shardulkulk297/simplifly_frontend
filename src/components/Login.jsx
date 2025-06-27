@@ -62,13 +62,13 @@ const Login = () => {
     }
     return (
         <div className="min-vh-100 d-flex align-items-center" >
-            {/* Overlay for better readability */}
+           
             <div className="position-absolute w-100 h-100" ></div>
             
             <div className="container position-relative" style={{ zIndex: 2 }}>
                 <div className="row justify-content-center">
                     <div className="col-md-6 col-lg-5">
-                        {/* Brand Section */}
+                       
                         <div className="text-center mb-4">
                             <h1 className="display-4 fw-bold text-black mb-2">
                                 ✈️ SimpliFly
@@ -76,7 +76,7 @@ const Login = () => {
                             <p className="text-grey-50 fs-5">Your journey begins here</p>
                         </div>
 
-                        {/* Login Card */}
+                       
                         <div className="card shadow-lg border-0" style={{
                             borderRadius: '15px',
                             backdropFilter: 'blur(10px)',
@@ -152,14 +152,14 @@ const Login = () => {
                             <div className="card-footer bg-transparent border-0 text-center py-4">
                                 <p className="mb-0 text-muted">
                                     Don't have an account? 
-                                    <Link to="/signup" href="#" className="text-decoration-none fw-semibold ms-1" style={{ color: '#667eea' }}>
+                                    <Link to="/signup" className="text-decoration-none fw-semibold ms-1" style={{ color: '#667eea' }}>
                                         Sign Up here
                                     </Link>
                                 </p>
                             </div>
                         </div>
 
-                        {/* Footer */}
+                        
                         <div className="text-center mt-4">
                             <p className="text-white-50 small">
                                 ©2025 SimpliFly. Fly with confidence.

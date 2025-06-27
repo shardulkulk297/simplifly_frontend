@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { fetchAllFlights } from '../../store/action/FlightAction';
-import { getAllSchedules } from '../../store/action/ScheduleAction';
+import { getAllSchedules } from '../../store/action/ScheduleAction'; 
 import { useDispatch } from 'react-redux';
 const OwnerLayout = () => {
     const navigate = useNavigate();
@@ -14,6 +14,7 @@ const OwnerLayout = () => {
         if (token == null || token == undefined || token == "")
             navigate("/")
     }, [navigate]);
+    
     useEffect(() => {
         const getFlights =  async() => {
             try {
@@ -49,16 +50,13 @@ const OwnerLayout = () => {
         <>
             <nav className="navbar navbar-expand-lg navbar-light bg-light shadow">
                 <div className='container'>
-                    <a className='navbar-brand fw-bold' href='/'>
+                    <Link className='navbar-brand fw-bold' to="/">
                         <span>✈️ SkyBooker</span>
-                    </a>
+                    </Link>
                     <div className='d-flex'>
-                        <a href="/bookings" className="btn btn-outline-primary me-2">
-                            Verification Status
-                        </a>
-                        <a href="/profile" className="btn btn-primary">
+                        <Link to="/flightOwner/profile" className="btn btn-primary">
                             Profile
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </nav>

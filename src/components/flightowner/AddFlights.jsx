@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import toast from 'react-hot-toast';
 import { Route } from 'react-router-dom';
 import { fetchAllFlights } from '../../store/action/FlightAction';
+import { useDispatch } from 'react-redux';
 
 const AddFlights = () => {
     const [flightNumber, setFlightNumber] = useState('');
@@ -63,7 +64,7 @@ const AddFlights = () => {
                                             <label htmlFor="flightNumber" className="form-label">
                                                 Flight Number
                                             </label>
-                                            <input type="text" id="flightNumber" className="form-control"
+                                            <input required type="text" id="flightNumber" className="form-control"
                                                 onChange={(e) => setFlightNumber(e.target.value)}
                                             />
                                         </div>
@@ -72,7 +73,7 @@ const AddFlights = () => {
                                             <label htmlFor="origin" className="form-label">
                                                 Origin
                                             </label>
-                                            <input type="text" id="origin" className="form-control"
+                                            <input required type="text" id="origin" className="form-control"
                                                 onChange={(e) => setOrigin(e.target.value)}
                                             />
                                         </div>
@@ -81,7 +82,7 @@ const AddFlights = () => {
                                             <label htmlFor="duration" className="form-label">
                                                 Duration
                                             </label>
-                                            <input type="text" id="duration" className="form-control"
+                                            <input required type="text" id="duration" className="form-control"
                                                 onChange={e => setDuration(e.target.value)} />
                                         </div>
 
@@ -89,7 +90,7 @@ const AddFlights = () => {
                                             <label htmlFor="baggageCheckin" className="form-label">
                                                 Baggage Check‑in (kg)
                                             </label>
-                                            <input
+                                            <input required
                                                 type="number"
                                                 id="baggageCheckin"
                                                 className="form-control"
@@ -102,7 +103,7 @@ const AddFlights = () => {
                                             <label htmlFor="totalSeats" className="form-label">
                                                 Total Seats
                                             </label>
-                                            <input
+                                            <input required
                                                 type="number"
                                                 id="totalSeats"
                                                 className="form-control"
@@ -118,7 +119,7 @@ const AddFlights = () => {
                                             <label htmlFor="destination" className="form-label">
                                                 Destination
                                             </label>
-                                            <input type="text" id="destination" className="form-control"
+                                            <input required type="text" id="destination" className="form-control"
                                                 onChange={(e) => setDestination(e.target.value)} />
                                         </div>
 
@@ -126,7 +127,7 @@ const AddFlights = () => {
                                             <label htmlFor="baggageCabin" className="form-label">
                                                 Baggage Cabin (kg)
                                             </label>
-                                            <input
+                                            <input required
                                                 type="number"
                                                 id="baggageCabin"
                                                 className="form-control"
@@ -139,7 +140,7 @@ const AddFlights = () => {
                                             <label htmlFor="firstClassSeats" className="form-label">
                                                 First Class Seats
                                             </label>
-                                            <input
+                                            <input required
                                                 type="number"
                                                 id="firstClassSeats"
                                                 className="form-control"
@@ -152,7 +153,7 @@ const AddFlights = () => {
                                             <label htmlFor="businessClassSeats" className="form-label">
                                                 Business Class Seats
                                             </label>
-                                            <input
+                                            <input required
                                                 type="number"
                                                 id="businessClassSeats"
                                                 className="form-control"

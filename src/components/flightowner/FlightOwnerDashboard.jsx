@@ -21,7 +21,7 @@ const FlightOwnerDashboard = () => {
 
     useEffect(() => {
         const getName = async () => {
-            fetchLoggedInUser(dispatch)
+            await fetchLoggedInUser(dispatch)
         }
         getName();
     }, [])   

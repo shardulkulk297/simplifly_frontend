@@ -26,5 +26,5 @@ export const fetchLoggedInUser = (dispatch) => {
             console.log(error);
         }
     }
-   getName();
+   return getName();
 }

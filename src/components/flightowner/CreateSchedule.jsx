@@ -12,9 +12,9 @@ const CreateSchedule = () => {
     const [departureTime, setDepartureTime] = useState("");
     const [arrivalTime, setArrivalTime] = useState("");
     const [fare, setFare] = useState(0);
-    const [freeMeal, setFreeMeal] = useState("");
-    const [mealAvailable, setMealAvailable] = useState("");
-    const [isWifiAvailable, setWifiAvailable] = useState("");
+    const [freeMeal, setFreeMeal] = useState("No");
+    const [mealAvailable, setMealAvailable] = useState("No");
+    const [isWifiAvailable, setWifiAvailable] = useState("No");
     const [loading, setLoading] = useState(false);
     const [firstClassRate, setFirstClassRate] = useState(0);
     const [businessClassRate, setBusinessClassRate] = useState(0);
@@ -76,6 +76,7 @@ const CreateSchedule = () => {
 
             console.log(response.data);
             toast.success("Flight " + response.data.flight.flightNumber + " Scheduled Successfully!!");
+
             setSelectedFlight(null);
             setDepartureTime("");
             setArrivalTime("");
@@ -83,10 +84,10 @@ const CreateSchedule = () => {
             setFreeMeal("");
             setMealAvailable("");
             setWifiAvailable("");
-    
 
-           
-           await getAllSchedules(dispatch)
+
+
+            await getAllSchedules(dispatch)
 
         } catch (error) {
             if (error.response) {
@@ -97,28 +98,24 @@ const CreateSchedule = () => {
                 console.error(error);
             }
         }
-         
+
     }
 
     return (
-        <div className='container-fluid min-vh-100 py-5'>
+        <div className='container-fluid min-vh-100'>
             <h1>Schedule your Flights 📅</h1>
             <div className="d-flex justify-content-center align-items-center">
 
                 <div className="w-100" style={{ maxWidth: "700px" }}>
 
-                    <div className="d-flex justify-content-center gap-3 mb-3">
-                        <Link to="/flightOwner/new-flight" className="btn btn-outline-primary">
-                            Add Flight
-                        </Link>
-                    </div>
+
 
                     <div className='card'>
                         <div className='card-body'>
                             <form onSubmit={handleSubmit}>
-                                <div className="mb-3">
+                                <div className="mb-2">
                                     <label htmlFor="flightName" className="form-label">Choose flight</label>
-                                    <select name="" className='form-select' id=""
+                                    <select required name="" className='form-select form-select-sm' id=""
                                         value={selectedFlight?.id || ""}
                                         onChange={(e) => handleFlightChange(e.target.value)}>
                                         <option value="" disabled>
@@ -137,71 +134,77 @@ const CreateSchedule = () => {
                                     </select>
 
                                 </div>
-                                <div>
-                                    <label htmlFor="" className="form-label">Start Date of Schedule</label>
-                                    <input type="datetime-local" className='form-control'
-                                        min={new Date().toISOString().slice(0, 16)}
-                                        onChange={(e) => setDepartureTime(e.target.value)} />
+                                <div className='mb-2'>
+                                    <label htmlFor="" className='form-label '>Departure Time</label>
+                                      <input required type="datetime-local" className='form-control form-control-sm'
+                                    value={departureTime}
+                                    min={new Date().toISOString().slice(0, 16)}
+                                    onChange={(e) => setDepartureTime(e.target.value)} />
                                 </div>
-                                <div>
-                                    <label htmlFor="" className="form-label">End Date of the Schedule</label>
-                                    <input type="datetime-local" className='form-control'
-                                        min={departureTime || new Date().toISOString().slice(0, 16)}
-                                        onChange={(e) => setArrivalTime(e.target.value)} />
+                                <div className='mb-2'>
+                                    <label htmlFor="" className='form-label'>Arrival Time</label>
+                                     <input type="datetime-local" className='form-control form-control-sm'
+                                    value={arrivalTime}
+                                    min={departureTime || new Date().toISOString().slice(0, 16)}
+                                    onChange={(e) => setArrivalTime(e.target.value)} />
                                 </div>
-                                <h6 className='text-center m-3'>Add Perks for the Flight</h6>
+                            
+                                <h6 className='text-center mb-2'>Add Perks for the Flight</h6>
                                 <div className='row g-3' >
                                     <div className="col-12 col-md-6">
-                                        <div className="mb-3">
+                                        <div className="mb-2">
                                             <label className="form-label">Wifi Available</label>
-                                            <select value={isWifiAvailable}
-                                                className="form-select"
+                                            <select required value={isWifiAvailable}
+                                                className="form-select form-select-sm"
                                                 onChange={e => setWifiAvailable(e.target.value)}
                                             >
+                                                <option value="" disabled>Select option</option>
                                                 <option value="Yes">Yes</option>
                                                 <option value="No">No</option>
                                             </select>
                                         </div>
-                                        <div className="mb-3">
+                                        <div className="mb-2">
                                             <label className="form-label">Free Meal</label>
-                                            <select value={freeMeal}
-                                                className="form-select"
+                                            <select required value={freeMeal}
+                                                className="form-select form-select-sm"
                                                 onChange={e => setFreeMeal(e.target.value)}
                                             >
+                                                <option value="" disabled>Select option</option>  {/* Add this */}
                                                 <option value="Yes">Yes</option>
                                                 <option value="No">No</option>
                                             </select>
                                         </div>
-                                        <div className="mb-3">
+                                        <div className="mb-2">
                                             <label className="form-label">Business Class Rate</label>
-                                            <input placeholder=' * original fare will be total seat price' type="Number" step="0.1" className='form-control' onChange={(e) => setBusinessClassRate(e.target.value)} />
+                                            <input required placeholder=' * original fare will be total seat price' type="Number" step="0.1" className='form-control form-control-sm' onChange={(e) => setBusinessClassRate(e.target.value)} />
                                         </div>
                                     </div>
 
                                     {/* Right column */}
                                     <div className="col-12 col-md-6">
-                                        <div className="mb-3">
+                                        <div className="mb-2">
                                             <label className="form-label">Meal Available</label>
-                                            <select value={mealAvailable}
-                                                className="form-select"
+                                            <select required value={mealAvailable}
+                                                className="form-select form-select-sm"
                                                 onChange={e => setMealAvailable(e.target.value)}
                                             >
+                                                <option value="" disabled>Select option</option>  {/* Add this */}
                                                 <option value="Yes">Yes</option>
                                                 <option value="No">No</option>
                                             </select>
                                         </div>
-                                        <div className="mb-3">
+                                        <div className="mb-2">
                                             <label className="form-label">Fare💵</label>
-                                            <input
+                                            <input required
                                                 type="number"
-                                                className="form-control"
+                                                className="form-control form-control-sm"
                                                 value={fare}
                                                 onChange={e => setFare(e.target.value)}
                                             />
                                         </div>
-                                        <div className="mb-3">
+                                        <div className="mb-2">
                                             <label className="form-label" >First Class Rate</label>
-                                            <input placeholder=' * original fare will be total seat price' type="Number" step="0.1" className='form-control' onChange={(e) => setFirstClassRate(e.target.value)} />
+                                            <input required placeholder=' * original fare will be total seat price' type="Number" step="0.1" className='form-control form-control-sm' onChange={(e) => setFirstClassRate(e.target.value)} />
                                         </div>
                                     </div>
 

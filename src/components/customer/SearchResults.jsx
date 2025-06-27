@@ -1,6 +1,7 @@
-import React from 'react'
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom'
+import { searchFlights } from '../../store/action/FlightAction';
 
 const SearchResults = () => {
 
@@ -9,9 +10,11 @@ const SearchResults = () => {
     const returnFlights = [];
     const trip = "one-way"
     const flights = useSelector(state => state.allFlights.flights);
+   
+
 
     const formatDateTime = (dateTimeString) => {
-        const date = new Date(dateTimeString); 
+        const date = new Date(dateTimeString);
         const dateOptions = {
             weekday: 'short',
             month: 'short',
@@ -39,10 +42,10 @@ const SearchResults = () => {
         );
     }
 
-    const bookFlights = (scheduleId) =>{
-        
-        navigate("/customer/book", {state: {scheduleId: scheduleId}})
-    
+    const bookFlights = (scheduleId) => {
+
+        navigate("/customer/book", { state: { scheduleId: scheduleId } })
+
     }
 
     return (
@@ -94,7 +97,7 @@ const SearchResults = () => {
                     </div>
                 </div>
 
-                {/* Main Content Area */}
+
                 <div className="col-lg-9 col-md-8">
                     <div className="d-flex justify-content-between align-items-center mb-3">
                         <h4 className="mb-0">
@@ -114,7 +117,7 @@ const SearchResults = () => {
                         </div>
                     </div>
 
-                    {/* Flight Results Table */}
+
                     <div className="table-responsive">
                         <table className="table table-hover">
                             <thead className="table-light">
@@ -136,53 +139,78 @@ const SearchResults = () => {
                                     const arrival = formatDateTime(f.arrivalTime);
 
                                     return (
+                                        <>
+                                            <tr key={index} className="align-middle">
+                                                <td>
+                                                    <div className="fw-bold text-primary">{f.flight.owner.companyName} {f.flight.flightNumber}</div>
+                                                    <small className="text-muted">
+                                                        {f.flight.totalSeats} seats |
+                                                        {f.flight.baggageCheckin}kg check-in
+                                                    </small>
+                                                </td>
+                                                <td>
+                                                    <div className="d-flex align-items-center">
+                                                        <span className="badge bg-secondary me-2">{f.flight.route.origin}</span>
+                                                        <i className="fas fa-arrow-right text-muted mx-1"></i>
 
-                                        <tr key={index} className="align-middle">
-                                            <td>
-                                                <div className="fw-bold text-primary">{f.flight.owner.companyName} {f.flight.flightNumber}</div>
-                                                <small className="text-muted">
-                                                    {f.flight.totalSeats} seats |
-                                                    {f.flight.baggageCheckin}kg check-in
-                                                </small>
-                                            </td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span className="badge bg-secondary me-2">{f.flight.route.origin}</span>
-                                                    <i className="fas fa-arrow-right text-muted mx-1"></i>
-                                                    
-                                                </div>
-                                            </td> 
-                                            <td>
-                                                 <div className="d-flex align-items-center">
-                                                    <span className="badge bg-secondary ms-2">{f.flight.route.destination}</span>
-                                                    <i className="fas fa-arrow-right text-muted mx-1"></i>
-                                                </div>
-                                                
-                                            </td>
-                                            <td>
-                                                <div className="fw-bold">{departure.time}</div>
-                                                <small className="text-muted">{departure.date}</small>
-                                            </td>
-                                            <td>
-                                                <div className="fw-bold">{arrival.time}</div>
-                                                <small className="text-muted">{arrival.date}</small>
-                                            </td>
-                                            <td>
-                                                <span className="badge bg-info text-dark">{f.flight.route.duration}</span>
-                                            </td>
-                                            <td>
-                                                <div className="fw-bold text-success fs-5">₹{f.fare.toLocaleString()}</div>
-                                                <small className="text-muted">per person</small>
-                                            </td>
-                                            <td>
-                                                <button onClick={()=> bookFlights(f.id)} className="btn btn-primary btn-sm px-3">
-                                                    Book
-                                                </button>
-                                                <button className="btn btn-outline-secondary btn-sm ms-1" data-bs-toggle="collapse" data-bs-target={`#details-${index}`}>
-                                                    <i className="fas fa-info-circle">View Details</i>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="d-flex align-items-center">
+                                                        <span className="badge bg-secondary ms-2">{f.flight.route.destination}</span>
+                                                        <i className="fas fa-arrow-right text-muted mx-1"></i>
+                                                    </div>
+
+                                                </td>
+                                                <td>
+                                                    <div className="fw-bold">{departure.time}</div>
+                                                    <small className="text-muted">{departure.date}</small>
+                                                </td>
+                                                <td>
+                                                    <div className="fw-bold">{arrival.time}</div>
+                                                    <small className="text-muted">{arrival.date}</small>
+                                                </td>
+                                                <td>
+                                                    <span className="badge bg-info text-dark">{f.flight.route.duration}</span>
+                                                </td>
+                                                <td>
+                                                    <div className="fw-bold text-success fs-5">₹{f.fare.toLocaleString()}</div>
+                                                    <small className="text-muted">per person</small>
+                                                </td>
+                                                <td>
+                                                    <button onClick={() => bookFlights(f.id)} className="btn btn-primary btn-sm px-3">
+                                                        Book
+                                                    </button>
+                                                    <button className="btn btn-outline-secondary btn-sm ms-1" data-bs-toggle="collapse" data-bs-target={`#details-${index}`}>
+                                                        <i className="fas fa-info-circle">View Details</i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr className="collapse" id={`details-${index}`}>
+                                                <td colSpan="8">
+                                                    <div className="card card-body bg-light mb-3">
+                                                        <div className="row">
+                                                            <div className="col-md-6">
+                                                                <h6 className="text-muted">Baggage Allowance</h6>
+                                                                <ul className="list-unstyled small">
+                                                                    <li>Check-in: <strong>{f.flight.baggageCheckin} kg</strong></li>
+                                                                    <li>Cabin: <strong>{f.flight.baggageCabin} kg</strong></li>
+                                                                </ul>
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <h6 className="text-muted">Seat Information</h6>
+                                                                <ul className="list-unstyled small">
+                                                                    <li>Total Seats: <strong>{f.flight.totalSeats}</strong></li>
+                                                                    <li>First Class: <strong>{f.flight.firstClassSeats}</strong></li>
+                                                                    <li>Business Class: <strong>{f.flight.businessClassSeats}</strong></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </>
+
                                     );
                                 }) : <div className='container py-5'>
                                     <div className='card card-body bg-danger text-center'>
@@ -255,13 +283,27 @@ const SearchResults = () => {
                                                 )
                                             }
                                         </>
-                                        /* render your return‐flights table here */
+
                                     )}
                             </tbody>
                         </table>
+
+                        <nav aria-label="Page navigation example">
+                            <ul className="pagination justify-content-center">
+                                <li className="page-item ">
+                                    <button className="page-link" >Previous</button>
+                                </li>
+                                <li className="page-item"><a className="page-link" href="#">1</a></li>
+                                <li className="page-item"><a className="page-link" href="#">2</a></li>
+                                <li className="page-item"><a className="page-link" href="#">3</a></li>
+                                <li className="page-item">
+                                    <button className="page-link" >Next</button>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                     {/* Expandable Details Rows */}
-                    {flights.length> 0 && flights.map((f, index) => (
+                    {/* {flights.length > 0 && flights.map((f, index) => (
                         <div key={`details-${index}`} className="collapse" id={`details-${index}`}>
                             <div className="card card-body bg-light mb-3">
                                 <div className="row">
@@ -283,7 +325,7 @@ const SearchResults = () => {
                                 </div>
                             </div>
                         </div>
-                    ))}
+                    ))} */}
                     {trip == "round" > 0 && returnFlights.length > 0 && (
                         <div>
                             {returnFlights.map((f, index) => (

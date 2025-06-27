@@ -22,9 +22,19 @@ const Signup = () => {
         }
         removeToken();
     }, [])
+    function validateEmail(email) {
+        
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
 
     const signupUser = async (e) => {
         e.preventDefault();
+
+        if(!validateEmail(email))
+        {
+            toast.success("Please enter a valid email Id");
+        }
 
         if (role === "CUSTOMER") {
             try {
@@ -115,7 +125,7 @@ const Signup = () => {
                                             👤
                                         </span>
                                         <input
-                                            type="text"
+                                            type="text" required
                                             className="form-control border-start-0 py-2"
                                             placeholder="Enter your username"
                                             style={{ fontSize: '15px' }}
@@ -131,7 +141,7 @@ const Signup = () => {
                                             🔒
                                         </span>
                                         <input
-                                            type="password"
+                                            type="password" required
                                             className="form-control border-start-0 py-2"
                                             placeholder="Enter your password"
                                             style={{ fontSize: '15px' }}
@@ -143,7 +153,7 @@ const Signup = () => {
                                 <div className="mb-3">
                                     <label className="form-label fw-semibold mb-2">Sign up as</label>
                                     <div className="btn-group w-100" role="group" aria-label="Role selection">
-                                        <input
+                                        <input required
                                             type="radio"
                                             className="btn-check"
                                             name="role"
@@ -157,7 +167,7 @@ const Signup = () => {
                                         </label>
 
                                         <input
-                                            type="radio"
+                                            type="radio" required
                                             className="btn-check"
                                             name="role"
                                             id="roleOwner"
@@ -170,7 +180,7 @@ const Signup = () => {
                                         </label>
 
                                         <input
-                                            type="radio"
+                                            type="radio" required
                                             className="btn-check"
                                             name="role"
                                             id="roleManager"
@@ -193,7 +203,7 @@ const Signup = () => {
                                                     👤
                                                 </span>
                                                 <input
-                                                    type="text"
+                                                    type="text" required
                                                     className="form-control border-start-0 py-2"
                                                     placeholder="Enter your full name"
                                                     style={{ fontSize: '15px' }}
@@ -209,7 +219,7 @@ const Signup = () => {
                                                     📞
                                                 </span>
                                                 <input
-                                                    type="text"
+                                                    type="text" required
                                                     className="form-control border-start-0 py-2"
                                                     placeholder="Enter your contact number"
                                                     style={{ fontSize: '15px' }}
@@ -224,7 +234,7 @@ const Signup = () => {
                                                     📩
                                                 </span>
                                                 <input
-                                                    type="text"
+                                                    type="email" required
                                                     className="form-control border-start-0 py-2"
                                                     placeholder="Enter your Company Email"
                                                     style={{ fontSize: '15px' }}
@@ -240,7 +250,7 @@ const Signup = () => {
                                                     🏠
                                                 </span>
                                                 <input
-                                                    type="text"
+                                                    type="text" required
                                                     className="form-control border-start-0 py-2"
                                                     placeholder="Enter your address"
                                                     style={{ fontSize: '15px' }}
@@ -255,7 +265,7 @@ const Signup = () => {
                                                     📷
                                                 </span>
                                                 <input
-                                                    type="file"
+                                                    type="file" required
                                                     className="form-control border-start-0 py-2"
                                                     placeholder="Upload Profile Picture"
                                                     style={{ fontSize: '15px' }}
@@ -276,7 +286,7 @@ const Signup = () => {
                                                     <span className="input-group-text bg-light border-end-0">
                                                         👤
                                                     </span>
-                                                    <input
+                                                    <input required
                                                         type="text"
                                                         className="form-control border-start-0 py-2"
                                                         placeholder="Enter your Company Name"
@@ -292,7 +302,7 @@ const Signup = () => {
                                                         📩
                                                     </span>
                                                     <input
-                                                        type="text"
+                                                        type="text" required
                                                         className="form-control border-start-0 py-2"
                                                         placeholder="Enter your Company Email"
                                                         style={{ fontSize: '15px' }}
@@ -308,7 +318,7 @@ const Signup = () => {
                                                         📞
                                                     </span>
                                                     <input
-                                                        type="text"
+                                                        type="text" required
                                                         className="form-control border-start-0 py-2"
                                                         placeholder="Enter your contact number"
                                                         style={{ fontSize: '15px' }}
@@ -324,7 +334,7 @@ const Signup = () => {
                                                         📷
                                                     </span>
                                                     <input
-                                                        type="file"
+                                                        type="file" required
                                                         className="form-control border-start-0 py-2"
                                                         placeholder="Upload Logo"
                                                         style={{ fontSize: '15px' }}

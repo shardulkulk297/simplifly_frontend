@@ -15,6 +15,7 @@ import GetBookings from "./components/flightowner/GetBookings"
 import Reports from "./components/flightowner/Reports"
 import AddRoute from "./components/flightowner/AddRoute"
 import Signup from "./components/Signup"
+import Profile from "./components/flightowner/Profile"
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
           <Route path="new-route" element={<AddRoute />}/>
           <Route path="get-bookings" element={<GetBookings />}/>
           <Route path="reports" element={<Reports/>}/>
+          <Route path="profile" element={<Profile />} />
         </Route>
       </Routes>
     </BrowserRouter>
