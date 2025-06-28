@@ -90,13 +90,10 @@ const CreateSchedule = () => {
             await getAllSchedules(dispatch)
 
         } catch (error) {
-            if (error.response) {
-                console.error('STATUS:', error.response.status);
-                console.error('HEADERS:', error.response.headers);
-                console.error('BODY:', error.response.data);
-            } else {
                 console.error(error);
-            }
+                const errMsg = error.response?.data?.message || 'Something went wrong'
+                toast.error(errMsg);
+            
         }
 
     }

@@ -1,16 +1,134 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom'
 import { searchFlights } from '../../store/action/FlightAction';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const SearchResults = () => {
-
 
     const navigate = useNavigate()
     const returnFlights = [];
     const trip = "one-way"
-    const flights = useSelector(state => state.allFlights.flights);
-   
+    const [flights, setFlights] = useState([]);
+    const [page, setPage] = useState(0);
+    const [isNextPage, setIsNextPage] = useState(true);
+    const size = 7;
+    const location = useLocation();
+    const dispatch = useDispatch();
+    const { origin, destination, date } = location.state || {};
+    const searchOrigin = origin || localStorage.getItem('searchOrigin');
+    const searchDestination = destination || localStorage.getItem('searchDestination');
+    const searchDate = date || localStorage.getItem('searchDate');
+    if (origin && destination && date) {
+        localStorage.setItem('searchOrigin', origin);
+        localStorage.setItem('searchDestination', destination);
+        localStorage.setItem('searchDate', date);
+    }
+    console.log(searchOrigin, searchDate, searchDestination);
+
+
+    //Filter Price
+    const [visibleFlights, setVisibleFlights] = useState([]);
+    const [filterPrice, setFilterprice] = useState(null);
+    const [filterTime, setFilterTime] = useState(null);
+    const [min, setMin] = useState(0);
+    const [max, setMax] = useState(0);
+    const [filterCompany, setFilterCompany] = useState(null);
+    const [filtersApplied, setFiltersApplied] = useState(false);
+    const handlePriceChange = (e) => {
+        setFilterprice(Number(e.target.value));
+    }
+
+    //Filter useEffect will get triggered whenever a new filter is applied
+    useEffect(() => {
+        let filtered = flights;
+
+        filtered = filtered.filter(
+            f => f.fare <= filterPrice
+        );
+
+        if (filterTime === "morning") {
+            filtered = filtered.filter((f) => {
+                const hours = new Date(f.departureTime).getHours();
+                return hours >= 6 && hours <= 12
+            })
+        }
+
+        if (filterTime === "afternoon") {
+            filtered = filtered.filter((f) => {
+                const hours = new Date(f.departureTime).getHours();
+                return hours >= 12 && hours <= 18
+            })
+
+        }
+
+        if (filterTime === "evening") {
+            filtered = filtered.filter((f) => {
+                const hours = new Date(f.departureTime).getHours();
+                return hours >= 18 && hours <= 24
+            })
+        }
+        if (filterCompany === "FlyIndia") {
+            filtered = filtered.filter((f) => f.flight.owner.companyName === "FlyIndia");
+        }
+        if (filterCompany === "Indigo") {
+            filtered = filtered.filter((f) => f.flight.owner.companyName === "Indigo");
+        }
+        if (filterCompany === "Gofirst") {
+            filtered = filtered.filter((f) => f.flight.owner.companyName === "Gofirst");
+        }
+        if (filterCompany === "Spicejet") {
+            filtered = filtered.filter((f) => f.flight.owner.companyName === "Spicejet");
+        }
+        if (filterCompany === "Akasa") {
+            filtered = filtered.filter((f) => f.flight.owner.companyName === "Akasa");
+        }
+        if (filterCompany === "Going") {
+            filtered = filtered.filter((f) => f.flight.owner.companyName === "Going");
+        }
+        if (filterCompany === "GoAir Flights") {
+            filtered = filtered.filter((f) => f.flight.owner.companyName === "GoAir Flights");
+        }
+
+        setVisibleFlights(filtered);
+    }, [flights, filterPrice, filterTime, filterCompany])
+
+    useEffect(() => {
+        const fetchFlights = async () => {
+            if (searchOrigin && searchDestination && searchDate) {
+                try {
+                    const filtersAppliedd =
+                        filterTime !== "" ||
+                        filterCompany !== "" ||
+                        filterPrice > 0;
+                    setFiltersApplied(filtersAppliedd);
+                    const response = await axios.get(`http://localhost:8080/api/flight/schedule/search`, {
+                        params: {
+                            origin: searchOrigin,
+                            destination: searchDestination,
+                            date: searchDate,
+                            page: page,
+                            size: size
+                        }
+                    });
+                    console.log(response.data);
+                    setFlights(response.data);
+                    setIsNextPage(response.data.length === size);
+                    const fares = response.data.map((f) => f.fare);
+                    const min = Math.min(...fares);
+                    const max = Math.max(...fares);
+                    setMin(min);
+                    setMax(max);
+                    setFilterprice(max);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        }
+        fetchFlights();
+    }, [page])
+
 
 
     const formatDateTime = (dateTimeString) => {
@@ -43,15 +161,13 @@ const SearchResults = () => {
     }
 
     const bookFlights = (scheduleId) => {
-
         navigate("/customer/book", { state: { scheduleId: scheduleId } })
-
     }
 
     return (
         <div className='container-fluid py-4'>
             <div className="row">
-                {/* Left Sidebar for Filters */}
+
                 <div className="col-lg-3 col-md-4">
                     <div className="card shadow-sm">
                         <div className="card-header bg-light">
@@ -63,35 +179,110 @@ const SearchResults = () => {
                         <div className="card-body">
                             <div className="mb-3">
                                 <label className="form-label small text-muted">Price Range</label>
-                                <input type="range" className="form-range" />
+                                <input
+                                    min={min}
+                                    max={max}
+                                    step={100}
+                                    onChange={handlePriceChange}
+                                    type="range" className="form-range" />
                                 <div className="d-flex justify-content-between small text-muted">
-                                    <span>₹500</span>
-                                    <span>₹5000</span>
+                                    <div>Showing flights ≤ ₹{filterPrice}</div>
                                 </div>
                             </div>
 
                             <div className="mb-3">
                                 <label className="form-label small text-muted">Departure Time</label>
                                 <div className="form-check">
-                                    <input className="form-check-input" type="checkbox" />
+                                    <input className="form-check-input"
+                                        checked={filterTime === "morning"}
+                                        type="checkbox"
+                                        onChange={() => setFilterTime(filterTime === "morning" ? "" : "morning")}
+                                    />
                                     <label className="form-check-label small">Morning (6AM - 12PM)</label>
                                 </div>
                                 <div className="form-check">
-                                    <input className="form-check-input" type="checkbox" />
+                                    <input className="form-check-input"
+                                        checked={filterTime === "afternoon"}
+                                        onChange={() => setFilterTime(filterTime === "afternoon" ? "" : "afternoon")}
+                                        type="checkbox" />
                                     <label className="form-check-label small">Afternoon (12PM - 6PM)</label>
                                 </div>
                                 <div className="form-check">
-                                    <input className="form-check-input" type="checkbox" />
+                                    <input className="form-check-input"
+                                        checked={filterTime === "evening"}
+                                        onChange={() => setFilterTime(filterTime === "evening" ? "" : "evening")}
+                                        type="checkbox" />
                                     <label className="form-check-label small">Evening (6PM - 12AM)</label>
                                 </div>
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label small text-muted">Airlines</label>
+                                <label className="form-label small text-muted me-2">Airlines</label>
                                 <div className="form-check">
-                                    <input className="form-check-input" type="checkbox" />
-                                    <label className="form-check-label small">All Airlines</label>
+                                    <label htmlFor="">FlyIndia</label>
+                                    <input
+                                        className="form-check-input"
+                                        checked={filterCompany === "FlyIndia"}
+                                        type="checkbox"
+                                        onChange={() => setFilterCompany(filterCompany === "FlyIndia" ? "" : "FlyIndia")}
+                                    />
                                 </div>
+                                <div className="form-check">
+                                    <label htmlFor="">Indigo</label>
+                                    <input
+                                        className="form-check-input"
+                                        checked={filterCompany === "Indigo"}
+                                        type="checkbox"
+                                        onChange={() => setFilterCompany(filterCompany === "Indigo" ? "" : "Indigo")}
+                                    />
+                                </div>
+                                <div className="form-check">
+                                    <label htmlFor="">Gofirst</label>
+                                    <input
+                                        className="form-check-input"
+                                        checked={filterCompany === "Gofirst"}
+                                        type="checkbox"
+                                        onChange={() => setFilterCompany(filterCompany === "Gofirst" ? "" : "Gofirst")}
+                                    />
+                                </div>
+                                <div className="form-check">
+                                    <label htmlFor="">Spicejet</label>
+                                    <input
+                                        className="form-check-input"
+                                        checked={filterCompany === "Spicejet"}
+                                        type="checkbox"
+                                        onChange={() => setFilterCompany(filterCompany === "Spicejet" ? "" : "Spicejet")}
+                                    />
+                                </div>
+                                <div className="form-check">
+                                    <label htmlFor="">Akasa</label>
+                                    <input
+                                        className="form-check-input"
+                                        checked={filterCompany === "Akasa"}
+                                        type="checkbox"
+                                        onChange={() => setFilterCompany(filterCompany === "Akasa" ? "" : "Akasa")}
+                                    />
+                                </div>
+                                <div className="form-check">
+                                    <label htmlFor="">Going</label>
+                                    <input
+                                        className="form-check-input"
+                                        checked={filterCompany === "Going"}
+                                        type="checkbox"
+                                        onChange={() => setFilterCompany(filterCompany === "Going" ? "" : "Going")}
+                                    />
+                                </div>
+                                <div className="form-check">
+                                    <label htmlFor="">GoAir Flights</label>
+                                    <input
+                                        className="form-check-input"
+                                        checked={filterCompany === "GoAir Flights"}
+                                        type="checkbox"
+                                        onChange={() => setFilterCompany(filterCompany === "GoAir Flights" ? "" : "GoAir Flights")}
+                                    />
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -104,17 +295,7 @@ const SearchResults = () => {
                             <i className="fas fa-plane me-2 text-primary"></i>
                             {trip === "Round" ? `Available Flights (${flights.length}) & Return Flights (${returnFlights.length})` : `Available Flights (${flights.length}) `}
                         </h4>
-                        <div className="dropdown">
-                            <button className="btn btn-outline-secondary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown">
-                                Sort by: Price
-                            </button>
-                            <ul className="dropdown-menu">
-                                <li><a className="dropdown-item" href="#">Price (Low to High)</a></li>
-                                <li><a className="dropdown-item" href="#">Price (High to Low)</a></li>
-                                <li><a className="dropdown-item" href="#">Duration</a></li>
-                                <li><a className="dropdown-item" href="#">Departure Time</a></li>
-                            </ul>
-                        </div>
+
                     </div>
 
 
@@ -133,14 +314,20 @@ const SearchResults = () => {
                                 </tr>
                             </thead>
                             <tbody>
-
-                                {flights.length !== 0 ? flights.map((f, index) => {
+                                {visibleFlights.length === 0 && (
+                                    <tr>
+                                        <td colSpan="8" className='text-center align-middle'>
+                                            No flights for this filter on this page
+                                        </td>
+                                    </tr>
+                                )}
+                                {visibleFlights.length !== 0 && visibleFlights.map((f, index) => {
                                     const departure = formatDateTime(f.departureTime);
                                     const arrival = formatDateTime(f.arrivalTime);
 
                                     return (
-                                        <>
-                                            <tr key={index} className="align-middle">
+                                        <React.Fragment key={f.id}>
+                                            <tr className="align-middle">
                                                 <td>
                                                     <div className="fw-bold text-primary">{f.flight.owner.companyName} {f.flight.flightNumber}</div>
                                                     <small className="text-muted">
@@ -209,14 +396,11 @@ const SearchResults = () => {
                                                     </div>
                                                 </td>
                                             </tr>
-                                        </>
+                                        </React.Fragment>
 
                                     );
-                                }) : <div className='container py-5'>
-                                    <div className='card card-body bg-danger text-center'>
-                                        <h5>No Flights Available for this route</h5>
-                                    </div>
-                                </div>
+                                })
+
                                 }
                                 {trip == "Round" &&
                                     (
@@ -288,16 +472,27 @@ const SearchResults = () => {
                             </tbody>
                         </table>
 
+
                         <nav aria-label="Page navigation example">
                             <ul className="pagination justify-content-center">
-                                <li className="page-item ">
-                                    <button className="page-link" >Previous</button>
-                                </li>
-                                <li className="page-item"><a className="page-link" href="#">1</a></li>
-                                <li className="page-item"><a className="page-link" href="#">2</a></li>
-                                <li className="page-item"><a className="page-link" href="#">3</a></li>
                                 <li className="page-item">
-                                    <button className="page-link" >Next</button>
+                                    <button
+                                        disabled={isNextPage}
+                                        className="page-link"
+                                        onClick={() => setPage(page - 1)}
+                                    >
+                                        Previous
+                                    </button>
+                                </li>
+
+                                <li className="page-item">
+                                    <button
+                                        disabled={!isNextPage}
+                                        className="page-link"
+                                        onClick={() => setPage(page + 1)}
+                                    >
+                                        Next
+                                    </button>
                                 </li>
                             </ul>
                         </nav>

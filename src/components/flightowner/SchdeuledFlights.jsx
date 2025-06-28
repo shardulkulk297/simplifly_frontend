@@ -64,6 +64,8 @@ const SchdeuledFlights = () => {
 
         } catch (error) {
             console.log(error);
+            const errMsg = error.response?.data?.message || 'Something went wrong'
+            toast.error(errMsg);
 
         }
         await getAllSchedules(dispatch)
@@ -298,7 +300,7 @@ const SchdeuledFlights = () => {
                                                                 isWifiAvailable: e.target.value
                                                             })}
                                                         >
-                                                            <option value="" disabled>Select option</option> 
+                                                            <option value="" disabled>Select option</option>
                                                             <option value="Yes">Yes</option>
                                                             <option value="No">No</option>
                                                         </select>
@@ -312,7 +314,7 @@ const SchdeuledFlights = () => {
                                                                 freeMeal: e.target.value
                                                             })}
                                                         >
-                                                            <option value="" disabled>Select option</option> 
+                                                            <option value="" disabled>Select option</option>
                                                             <option value="Yes">Yes</option>
                                                             <option value="No">No</option>
                                                         </select>
@@ -337,7 +339,7 @@ const SchdeuledFlights = () => {
                                                                 mealAvailable: e.target.value
                                                             })}
                                                         >
-                                                            <option value="" disabled>Select option</option> 
+                                                            <option value="" disabled>Select option</option>
                                                             <option value="Yes">Yes</option>
                                                             <option value="No">No</option>
                                                         </select>

@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react'
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 
 const CustomerLayout = () => {
-      useEffect(() => {
-            let token = localStorage.getItem('token');
-            if (token == null || token == undefined || token == "")
-                navigate("/")
-        }, []);
-  return (
-    <>
+    const navigate = useNavigate();
+    useEffect(() => {
+        let token = localStorage.getItem('token');
+        if (token == null || token == undefined || token == "")
+            navigate("/")
+    }, []);
+    return (
+        <>
             <nav className="navbar navbar-expand-lg navbar-light bg-light shadow">
                 <div className='container'>
                     <a className='navbar-brand fw-bold' href='/'>
@@ -22,15 +23,19 @@ const CustomerLayout = () => {
                             Logout
                         </Link>
                     </div>
+                    
                 </div>
+                
             </nav>
+            
 
             {/* This is where child routes (nested under /flightOwner) will render */}
             <div className="container">
                 <Outlet />
+
             </div>
         </>
-  )
+    )
 }
 
 export default CustomerLayout

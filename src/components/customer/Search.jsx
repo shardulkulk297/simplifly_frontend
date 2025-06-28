@@ -14,7 +14,6 @@ const Search = () => {
   const [returnDate, setReturnDate] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const flights = useSelector(state => state.allFlights.flights);
 
   const handleSearch = (e) => {
 
@@ -29,8 +28,10 @@ const Search = () => {
     if (!returnDate & trip !== "Round") {
       const getOneWayFlights = () => {
         try {
-          searchFlights(dispatch)(origin, destination, date);     
-          navigate("/customer/search-results")
+          searchFlights(dispatch)(origin, destination, date);
+          navigate("/customer/search-results", {
+            state: { origin, destination, date }
+          });
         } catch (error) {
           toast.success("Server Failed to Fetch Flights")
           console.log(error);
@@ -48,13 +49,13 @@ const Search = () => {
 
   return (
     <div className='d-flex flex-column min-vh-100 bg-light'>
-     
+
       <div className='flex-grow-1 d-flex align-items-center'>
         <div className='container text-center py-5'>
           <div className='shadow bg-light rounded p-10 pb-5 pt-5'>
             <h1 className=''>Find Your Perfect Flight</h1>
             <p className='lead mb-4'>Search and compare flights from hundreds of airlines worldwide with the best prices guaranteed</p>
-           
+
             <div className='card mx-auto' style={{ maxWidth: '600px' }}>
               <div className='card-body'>
                 <div className='row g-3'>
@@ -132,9 +133,9 @@ const Search = () => {
             </div>
           </div>
         </div>
-        
-        
-        
+
+
+
         <div className='row justify-content-end mt-5 m-5 g-1'>
           <div>
             <div>💰</div>
@@ -153,7 +154,7 @@ const Search = () => {
           </div>
         </div>
 
-       
+
 
       </div>
       <footer className="bg-white text-center py-4 mt-auto bg-light shadow ">

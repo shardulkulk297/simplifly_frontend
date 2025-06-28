@@ -23,7 +23,7 @@ const Signup = () => {
         removeToken();
     }, [])
     function validateEmail(email) {
-        
+
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(email);
     }
@@ -31,9 +31,60 @@ const Signup = () => {
     const signupUser = async (e) => {
         e.preventDefault();
 
-        if(!validateEmail(email))
-        {
-            toast.success("Please enter a valid email Id");
+        if (!username.trim()) {
+            toast.error("Username is required");
+            return;
+        }
+
+        if (username.length < 3 || username.length > 10) {
+            toast.error("Username must be between 4 and 20 characters");
+            return;
+        }
+
+        if (!password.trim()) {
+            toast.error("Password is required");
+            return;
+        }
+
+        if (password.length < 6) {
+            toast.error("Password must be at least 6 characters long");
+            return;
+        }
+
+        if (!role) {
+            toast.error("Please select a role");
+            return;
+        }
+
+        if (!validateEmail(email)) {
+            toast.error("Please enter a valid email");
+            return;
+        }
+
+        if (!contact.trim()) {
+            toast.error("Contact number is required");
+            return;
+        }
+
+        if (!/^\d{10}$/.test(contact)) {
+            toast.error("Contact must be a 10-digit number");
+            return;
+        }
+
+        if ((role === "CUSTOMER" || role === "FLIGHTOWNER") && !name.trim()) {
+            toast.error("Name / Company Name is required");
+            return;
+        }
+
+        if ((role === "CUSTOMER" || role === "FLIGHTOWNER") && !image) {
+            toast.error("Please upload an image or logo");
+            return;
+        }
+
+        // Optional: validate address for CUSTOMER
+        if (role === "CUSTOMER" && !address.trim()) {
+            toast.error("Address is required");
+            return;
         }
 
         if (role === "CUSTOMER") {
@@ -71,7 +122,8 @@ const Signup = () => {
 
             } catch (error) {
                 console.log(error);
-                toast.error("ERROR ADDING FLIGHTOWNER");
+                const errMsg = error.response?.data?.message || 'Something went wrong'
+                toast.error(errMsg);
             }
         }
 

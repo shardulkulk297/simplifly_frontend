@@ -9,10 +9,10 @@ const AddRoute = () => {
     const [destination, setDestination] = useState('');
     const [duration, setDuration] = useState('');
     const dispatch = useDispatch();
-    const handleSubmit = async(e)=>{
+    const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-             const payload = {
+            const payload = {
                 origin,
                 destination,
                 duration
@@ -25,13 +25,15 @@ const AddRoute = () => {
                 payload,
                 config
             )
-            
+
             await getRoutes(dispatch)
             toast.success("Added Route Successfully");
-            
+
         } catch (error) {
             console.log(error);
-            
+            const errMsg = error.response?.data?.message || 'Something went wrong'
+            toast.error(errMsg);
+
         }
 
 
@@ -58,7 +60,7 @@ const AddRoute = () => {
                                                 onChange={(e) => setOrigin(e.target.value)}
                                             />
                                         </div>
-                                         <div className="mb-3">
+                                        <div className="mb-3">
                                             <label htmlFor="flightNumber" className="form-label">
                                                 Enter Destination:
                                             </label>
@@ -66,8 +68,8 @@ const AddRoute = () => {
                                                 onChange={(e) => setDestination(e.target.value)}
                                             />
                                         </div>
-                                        
-                                         <div className="mb-3">
+
+                                        <div className="mb-3">
                                             <label htmlFor="flightNumber" className="form-label">
                                                 Enter Duration:
                                             </label>
@@ -76,7 +78,7 @@ const AddRoute = () => {
                                             />
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                 <button type='submit' className='btn btn-primary '>Add Route</button>
                             </form>

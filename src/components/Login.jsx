@@ -8,12 +8,12 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [msg, setMsg] = useState("");
 
-    useEffect(()=>{
-        const removeToken = ()=>{
+    useEffect(() => {
+        const removeToken = () => {
             localStorage.clear();
         }
         removeToken();
-    },[])
+    }, [])
 
 
     const loginUser = async () => {
@@ -57,18 +57,19 @@ const Login = () => {
 
         } catch (error) {
             console.log(error);
-            setMsg("Login Failed");
+            const errMsg = error.response?.data?.message || 'Something went wrong'
+            toast.error(errMsg);
         }
     }
     return (
         <div className="min-vh-100 d-flex align-items-center" >
-           
+
             <div className="position-absolute w-100 h-100" ></div>
-            
+
             <div className="container position-relative" style={{ zIndex: 2 }}>
                 <div className="row justify-content-center">
                     <div className="col-md-6 col-lg-5">
-                       
+
                         <div className="text-center mb-4">
                             <h1 className="display-4 fw-bold text-black mb-2">
                                 ✈️ SimpliFly
@@ -76,7 +77,7 @@ const Login = () => {
                             <p className="text-grey-50 fs-5">Your journey begins here</p>
                         </div>
 
-                       
+
                         <div className="card shadow-lg border-0" style={{
                             borderRadius: '15px',
                             backdropFilter: 'blur(10px)',
@@ -86,7 +87,7 @@ const Login = () => {
                                 <h3 className="mb-0 text-dark fw-semibold">Welcome Back</h3>
                                 <p className="text-muted mt-2">Sign in to your account</p>
                             </div>
-                            
+
                             <div className="card-body px-4 pb-4">
                                 {msg !== "" && (
                                     <div className={`alert ${msg.includes('SUCCESSFUL') ? 'alert-success' : 'alert-danger'} border-0 rounded-3`}>
@@ -106,12 +107,12 @@ const Login = () => {
                                             <i className="fas fa-user text-muted"></i>
                                             👤
                                         </span>
-                                        <input 
-                                            type="text" 
+                                        <input
+                                            type="text"
                                             className="form-control border-start-0 py-3"
                                             placeholder="Enter your username"
                                             style={{ fontSize: '16px' }}
-                                            onChange={(e) => setUsername(e.target.value)} 
+                                            onChange={(e) => setUsername(e.target.value)}
                                         />
                                     </div>
                                 </div>
@@ -123,18 +124,18 @@ const Login = () => {
                                             <i className="fas fa-lock text-muted"></i>
                                             🔒
                                         </span>
-                                        <input 
-                                            type="password" 
+                                        <input
+                                            type="password"
                                             className="form-control border-start-0 py-3"
                                             placeholder="Enter your password"
                                             style={{ fontSize: '16px' }}
-                                            onChange={(e) => setPassword(e.target.value)} 
+                                            onChange={(e) => setPassword(e.target.value)}
                                         />
                                     </div>
                                 </div>
 
                                 <div className="d-grid mb-3">
-                                    <button 
+                                    <button
                                         className="btn btn-primary btn-lg py-3 fw-semibold"
                                         style={{
                                             background: 'linear-gradient(45deg, #667eea, #764ba2)',
@@ -151,7 +152,7 @@ const Login = () => {
 
                             <div className="card-footer bg-transparent border-0 text-center py-4">
                                 <p className="mb-0 text-muted">
-                                    Don't have an account? 
+                                    Don't have an account?
                                     <Link to="/signup" className="text-decoration-none fw-semibold ms-1" style={{ color: '#667eea' }}>
                                         Sign Up here
                                     </Link>
@@ -159,7 +160,7 @@ const Login = () => {
                             </div>
                         </div>
 
-                        
+
                         <div className="text-center mt-4">
                             <p className="text-white-50 small">
                                 ©2025 SimpliFly. Fly with confidence.

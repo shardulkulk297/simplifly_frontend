@@ -57,14 +57,15 @@ export const getOwnerFlights = (dispatch) => {
 }
 
 
-export const searchFlights = (dispatch) => (origin, destination, date) => {
-    const getFlights = async () => {
+export const searchFlights = (dispatch) => async(origin, destination, date, page, size=6) => {
         try {
-            const response = await axios.get("http://localhost:8080/api/flight/schedule/search", {
+            const response = await axios.get(`http://localhost:8080/api/flight/schedule/search`, {
                 params: {
                     origin,
                     destination,
-                    date
+                    date,
+                    page,
+                    size
                 }
             });
             console.log(response.data);
@@ -72,14 +73,11 @@ export const searchFlights = (dispatch) => (origin, destination, date) => {
                 'payload': response.data,
                 'type': "SEARCH_FLIGHTS"
             })
+            return response.data;
 
         } catch (error) {
             console.log(error);
         }
-
-    }
-   return getFlights();
-
 }
 
 

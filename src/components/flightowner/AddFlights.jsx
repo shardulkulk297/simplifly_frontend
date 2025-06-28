@@ -18,7 +18,7 @@ const AddFlights = () => {
     const dispatch = useDispatch();
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         try {
             const payload = {
                 route: {
@@ -36,7 +36,7 @@ const AddFlights = () => {
             const flight = await axios.post("http://localhost:8080/api/flight/add",
                 payload,
                 {
-                    headers: {'Authorization': "Bearer " + localStorage.getItem('token')}
+                    headers: { 'Authorization': "Bearer " + localStorage.getItem('token') }
                 }
             )
             console.log(flight);
@@ -44,6 +44,8 @@ const AddFlights = () => {
             toast.success("Flight Added Successfully!!")
         } catch (error) {
             console.log(error);
+            const errMsg = error.response?.data?.message || 'Something went wrong'
+            toast.error(errMsg);
 
         }
 
