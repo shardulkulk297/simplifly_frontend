@@ -1,6 +1,7 @@
 import axios from 'axios'
 import jsPDF from 'jspdf';
 import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast';
 
 const ViewBookings = () => {
 
@@ -13,7 +14,7 @@ const ViewBookings = () => {
                     headers: { 'Authorization': "Bearer " + localStorage.getItem('token') }
                 })
                 console.log(response.data);
-                const sortedBookings = response.data.sort((a, b) => b.id - a.id);
+                const sortedBookings = response.data.sort((a, b) => b.bookingId - a.bookingId);
                 setBookings(sortedBookings);
 
             } catch (error) {
@@ -37,28 +38,81 @@ const ViewBookings = () => {
         });
     }
 
-    const handleCancel = async () => {
-
-
+    const handleCancel = async (bookingId) => {
+        try {
+            
+            const response = await axios.put(`http://localhost:8080/api/booking/cancelBooking/${bookingId}`, null,{
+                headers:{'Authorization': "Bearer " + localStorage.getItem('token')}
+            })
+            console.log(response.data);
+            toast.success(response.data);
+            window.location.reload();
+            
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const handleDownload = (booking) => {
         const doc = new jsPDF();
 
+
         doc.setFontSize(18);
-        doc.text('FLIGHT TICKET', 105, 20, null, null, 'center');
+        doc.setFont('helvetica', 'bold');
+        doc.text('Flight Ticket', 105, 20, null, null, 'center');
+
+        let y = 40;
+
 
         doc.setFontSize(12);
-        doc.text(`Flight: ${booking.flightNumber}`, 20, 40);
-        doc.text(`Route: ${booking.route.origin} → ${booking.route.destination}`, 20, 50);
-        doc.text(`Departure: ${formatDateTime(booking.departureTime)}`, 20, 60);
-        doc.text(`Arrival:   ${formatDateTime(booking.arrivalTime)}`, 20, 70);
-        doc.text(`Passengers: ${booking.passengerNames.map(p => p.name).join(', ')}`, 20, 100);
-        doc.text(`Seats: ${booking.seatNumbers.join(', ')}`, 20, 110);
-        doc.text(`Status: ${booking.bookingStatus}`, 20, 120);
-        doc.text(`Total Paid: ₹${booking.totalPrice}`, 20, 130);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Flight Information', 20, y);
+        y += 10;
 
-        doc.save(`ticket_${booking.id}.pdf`);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Flight Number: ${booking.flightNumber}`, 20, y);
+        y += 8;
+        doc.text(`Route: ${booking.route.origin} to ${booking.route.destination}`, 20, y);
+        y += 8;
+        doc.text(`Departure: ${formatDateTime(booking.departureTime)}`, 20, y);
+        y += 8;
+        doc.text(`Arrival: ${formatDateTime(booking.arrivalTime)}`, 20, y);
+        y += 15;
+
+
+        doc.setFont('helvetica', 'bold');
+        doc.text('Passenger Information', 20, y);
+        y += 10;
+
+        doc.setFont('helvetica', 'normal');
+        if (booking.passengerNames && booking.passengerNames.length > 0) {
+            booking.passengerNames.forEach((passenger, index) => {
+                doc.text(`${index + 1}. ${passenger.name} (Age: ${passenger.age}, Gender: ${passenger.gender})`, 20, y);
+                y += 8;
+            });
+        }
+        y += 7;
+        // Seat information
+        doc.setFont('helvetica', 'bold');
+        doc.text('Seat Information', 20, y);
+        y += 10;
+
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Seats: ${booking.seatNumbers.join(', ')}`, 20, y);
+        y += 15;
+
+        // Booking details
+        doc.setFont('helvetica', 'bold');
+        doc.text('Booking Details', 20, y);
+        y += 10;
+
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Status: ${booking.bookingStatus}`, 20, y);
+        y += 8;
+        doc.text(`Total Amount Paid: ₹${booking.totalPrice}`, 20, y);
+
+
+        doc.save(`ticket_${booking.flightNumber}.pdf`);
     };
 
     return (
@@ -114,8 +168,27 @@ const ViewBookings = () => {
                                             <p><strong>Booking Status:</strong> <strong className={`${booking.bookingStatus === "CONFIRMED" ? 'text-success' : 'text-danger'} text-primary`}>{booking.bookingStatus}</strong> </p>
                                             <p><strong>Booked By: </strong> <strong className='text-primary'>{(booking.bookedBy).toUpperCase()}</strong></p>
                                             <p><strong>Ticket Price: </strong> <strong className='text-primary'>{(booking.totalPrice)}</strong></p>
-                                            <p><strong>Seats Booked: </strong> {booking.seatNumbers}</p>
-                                            <button className='btn btn-danger me-2' onClick={() => handleCancel()}>Cancel</button>
+                                            <p><strong>Seats Booked: </strong>
+                                                <span className='text-primary'>
+                                                    {Array.isArray(booking.seatNumbers) ? booking.seatNumbers.join(', ') : booking.seatNumbers}
+                                                </span>
+                                            </p>
+                                            {/* Properly formatted passengers */}
+                                            <div className='mb-3'>
+                                                <strong>Passengers: </strong>
+                                                <div className='mt-2'>
+                                                    {booking.passengerNames && booking.passengerNames.map((passenger, index) => (
+                                                        <div key={index} className='mb-1 ms-3'>
+                                                            <span className='text-primary'>
+                                                                <strong>{index + 1}. {passenger.name}</strong>
+                                                                {passenger.age && <span className='text-muted'> (Age: {passenger.age})</span>}
+                                                                {passenger.gender && <span className='text-muted'> - {passenger.gender}</span>}
+                                                            </span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <button className='btn btn-danger me-2' onClick={() => handleCancel(booking.bookingId)}>Cancel</button>
                                             <button onClick={() => handleDownload(booking)} className='btn btn-success me-2'>Download</button>
                                         </div>
 
