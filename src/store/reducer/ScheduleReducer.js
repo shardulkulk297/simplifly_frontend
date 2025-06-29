@@ -11,6 +11,13 @@ const ScheduleReducer = (state = initialState, action)=>{
             schedules: action.payload
         })
     }
+    if(action.type === "GET_SCHEDULE")
+    {
+        return({
+            ...state,
+            schedules: action.payload
+        })
+    }
     
     return state;
 }

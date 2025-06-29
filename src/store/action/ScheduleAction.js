@@ -22,3 +22,22 @@ export const getAllSchedules = async (dispatch) => {
     }
 
 }
+
+export const getSchedule = (dispatch) => async(scheduleId)=>{
+    try{
+        const response = await axios.get(`http://localhost:8080/api/flight/schedule/getSchedule/${scheduleId}`,
+        {
+            headers: {'Authorization': "Bearer " + localStorage.getItem('token')}
+        })
+
+        console.log(response.data);
+        dispatch({
+            'payload': response.data,
+            'type': "GET_SCHEDULE"
+        })
+    }
+    catch(err){
+        console.log(err);
+
+    }
+}
