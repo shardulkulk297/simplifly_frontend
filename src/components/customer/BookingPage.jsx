@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { getSchedule } from '../../store/action/ScheduleAction';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -8,6 +8,7 @@ import BookingHeader from './BookingHeader';
 import SeatSelection from './SeatSelection';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import PaymentPage from './PaymentPage';
 
 const BookingPage = () => {
 
@@ -22,7 +23,7 @@ const BookingPage = () => {
     const [seatNumbers, setSeatNumbers] = useState([]);
     const [paymentMethod, setPaymentMethod] = useState("");
     const [bookingData, setBookingData] = useState({
-        schedule: schedule,
+        scheduleId: scheduleId,
         noOfTickets: 1,
         passengers: [{
             name: '',
@@ -32,6 +33,7 @@ const BookingPage = () => {
         seatNumbers: seatNumbers,
         paymentMethod: ""
     });
+    const navigate = useNavigate();
 
     // Fetch schedule data (keeping as requested)
     useEffect(() => {
@@ -61,8 +63,7 @@ const BookingPage = () => {
                 setLoading(false);
             } catch (error) {
                 console.log(error);
-                const errMsg = error.response?.data?.message || 'Something went wrong'
-                toast.error(errMsg);
+                toast.error("Something went wrong");
             }
         }
         if (scheduleId) {
@@ -137,10 +138,10 @@ const BookingPage = () => {
     const calculateTotalPrice = () => {
         const taxes = 1008;
         let total = 0;
-        for(let seat of selectedSeats){
-           
-            const actualSeat = seats.find((s)=>s.seatNumber === seat)
-            if(actualSeat){
+        for (let seat of selectedSeats) {
+
+            const actualSeat = seats.find((s) => s.seatNumber === seat)
+            if (actualSeat) {
                 total = total + actualSeat.price + taxes;
             }
         }
@@ -148,10 +149,46 @@ const BookingPage = () => {
         return total;
     };
 
+    const getSeatPrice = () => {
+        selectedSeats.reduce((total, seatNumber) => {
+            const seat = seats.find(s => s.seatNumber === seatNumber);
+            return total + (seat ? seat.price : 0);
+        }, 0).toLocaleString()
+    }
+
     const handleBookingSubmit = () => {
-        console.log('Booking Data:', bookingData);
-        alert('Booking submitted! Check console for data.');
-    };
+        if (!bookingData.scheduleId) {
+            toast.error("Schedule ID is missing.");
+            return;
+        }
+
+        if (!bookingData.noOfTickets || bookingData.noOfTickets <= 0) {
+            toast.error("Number of tickets must be greater than 0.");
+            return;
+        }
+
+        if (!Array.isArray(bookingData.passengers) || bookingData.passengers.length === 0) {
+            toast.error("At least one passenger is required.");
+            return;
+        }
+
+        for (let i = 0; i < bookingData.passengers.length; i++) {
+            const passenger = bookingData.passengers[i];
+            if (!passenger.name || !passenger.age || !passenger.gender) {
+                toast.error(`Passenger ${i + 1} has incomplete information.`);
+                return;
+            }
+        }
+
+        if (!bookingData.seatNumbers || bookingData.seatNumbers.length !== bookingData.noOfTickets) {
+            toast.error("Please select valid seat numbers.");
+            return;
+        }
+
+        navigate("/customer/payment", {state: { 'bookingData': bookingData, 'totalPrice': calculateTotalPrice() }})
+        toast.success('Going to payment!!');
+
+    }
 
     // Loading state
     if (loading) {
@@ -167,7 +204,7 @@ const BookingPage = () => {
     return (
         <div className="bg-light min-vh-100">
             <div className="container py-4">
-                <BookingHeader />
+                <BookingHeader isBookingPage={true}  />
                 <div className="row g-4">
                     <div className="col-lg-8">
                         {/* Flight Summary */}
@@ -265,17 +302,14 @@ const BookingPage = () => {
                                         <div className="d-flex justify-content-between mb-2">
                                             <small className="text-muted">Seat selection</small>
                                             <small className="fw-medium">
-                                                ₹{selectedSeats.reduce((total, seatNumber) => {
-                                                    const seat = seats.find(s => s.seatNumber === seatNumber);
-                                                    return total + (seat ? seat.price : 0);
-                                                }, 0).toLocaleString()}
+                                                ₹{getSeatPrice()}
                                             </small>
                                         </div>
                                     )}
                                     <hr />
                                     <div className="d-flex justify-content-between">
                                         <h6 className="mb-0">Total price</h6>
-                                        <h6 className="mb-0">₹{calculateTotalPrice().toLocaleString()}</h6>
+                                        <h6 className="mb-0">₹{calculateTotalPrice()}</h6>
                                     </div>
                                 </div>
 
@@ -283,6 +317,8 @@ const BookingPage = () => {
                                     className="btn btn-primary w-100"
                                     onClick={handleBookingSubmit}
                                     disabled={selectedSeats.length !== bookingData.noOfTickets}
+                                    to="/customer/payment"
+                                    
                                 >
                                     Continue to Payment
                                 </button>
@@ -301,7 +337,7 @@ const BookingPage = () => {
     );
 };
 
-
+export default BookingPage;
 
 
 

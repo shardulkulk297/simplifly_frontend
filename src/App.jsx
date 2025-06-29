@@ -16,6 +16,8 @@ import Reports from "./components/flightowner/Reports"
 import AddRoute from "./components/flightowner/AddRoute"
 import Signup from "./components/Signup"
 import Profile from "./components/flightowner/Profile"
+import PaymentPage from "./components/customer/PaymentPage"
+import ViewBookings from "./components/customer/ViewBookings"
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
           <Route index element={<Search />}/>
           <Route path="search-results" element={<SearchResults/>}/>
           <Route path="book" element={<BookingPage/>}/>
+          <Route path="payment" element={<PaymentPage />} />
+          <Route path="bookings" element={<ViewBookings />}/>
         </Route>
         <Route path="/flightOwner" element={<OwnerLayout/>}>
           <Route index element={<FlightOwnerDashboard/>} />
