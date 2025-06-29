@@ -10,8 +10,7 @@ const Search = () => {
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
   const [date, setDate] = useState('');
-  const [trip, setTrip] = useState('');
-  const [returnDate, setReturnDate] = useState('');
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -23,9 +22,6 @@ const Search = () => {
     }
     console.log('Searching flights:', { origin, destination, date });
 
-    const mainDate = new Date()
-
-    if (!returnDate & trip !== "Round") {
       const getOneWayFlights = () => {
         try {
           searchFlights(dispatch)(origin, destination, date);
@@ -38,13 +34,8 @@ const Search = () => {
         }
       }
       getOneWayFlights();
-    }
-    else {
-      const getReturnFlights = async () => {
-        toast.success("Wait for that logic");
-      }
-      getReturnFlights()
-    }
+    
+    
   };
 
   return (
@@ -77,30 +68,9 @@ const Search = () => {
                       onChange={(e) => setDestination(e.target.value)}
                     />
                   </div>
-                  <div className='col-md-4'>
-                    <div className="form-check">
-                      <input className="form-check-input" type="radio"
-                        name="flexRadioDefault"
-                        id="flexRadioDefault1"
-                        onChange={(e) => setTrip(e.target.value)}
-                      />
-                      <label className="form-check-label" for="flexRadioDefault1">
-                        Round
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input className="form-check-input" type="radio" name="flexRadioDefault"
-                        id="flexRadioDefault2"
-                        onChange={(e) => setTrip(e.target.value)}
-                      />
-                      <label className="form-check-label" for="flexRadioDefault2">
-                        One-way
-                      </label>
-                    </div>
-
-                  </div>
+                  
                   <div className="col-md-4">
-                    <label htmlFor="">Date Of Departure</label>
+                    {/* <label htmlFor="">Date Of Departure</label> */}
                     <input
                       type="date"
                       className="form-control"
@@ -110,16 +80,7 @@ const Search = () => {
                       required
                     />
                   </div>
-                  <div className="col-md-4">
-                    <label htmlFor="">Return</label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      value={returnDate}
-                      placeholder='Departure Date'
-                      onChange={e => setReturnDate(e.target.value)}
-                    />
-                  </div>
+                 
                   <div className="col-12 d-grid">
                     <button
                       className="btn btn-primary btn-lg"
