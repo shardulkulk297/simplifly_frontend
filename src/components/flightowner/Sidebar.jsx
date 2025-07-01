@@ -12,9 +12,7 @@ const Sidebar = ({ children }) => {
     { path: '/flightOwner/new-schedule', icon: '📅', label: 'Schedule Flights' },
     { path: '/flightOwner/scheduledFlights', icon: '✈️', label: 'Scheduled Flights' },
     { path: '/flightOwner/manage-routes', icon: '🗺️', label: 'Manage Routes' },
-    { path: '/flightOwner/reports', icon: '📊', label: 'Reports' },
-    { path: '/flightOwner/get-bookings', icon: '🎫', label: 'Bookings' }
-
+   
   ];
 
 

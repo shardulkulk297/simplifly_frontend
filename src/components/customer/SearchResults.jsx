@@ -98,11 +98,7 @@ const SearchResults = () => {
         const fetchFlights = async () => {
             if (searchOrigin && searchDestination && searchDate) {
                 try {
-                    const filtersAppliedd =
-                        filterTime !== "" ||
-                        filterCompany !== "" ||
-                        filterPrice > 0;
-                    setFiltersApplied(filtersAppliedd);
+                 
                     const response = await axios.get(`http://localhost:8080/api/flight/schedule/search`, {
                         params: {
                             origin: searchOrigin,
@@ -150,9 +146,9 @@ const SearchResults = () => {
         };
     };
 
-    if (flights.length === 0){
+    if (flights.length === 0) {
         return (
-              <div className="container mt-5">
+            <div className="container mt-5">
                 <div className="alert alert-warning text-center">
                     No flights available.
                 </div>
@@ -290,7 +286,7 @@ const SearchResults = () => {
 
 
                 <div className="col-lg-9 col-md-8">
-                   
+
 
 
                     <div className="table-responsive">
@@ -304,6 +300,7 @@ const SearchResults = () => {
                                     <th>Arrival</th>
                                     <th>Duration</th>
                                     <th>Price</th>
+                                    <th>Perks</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -358,13 +355,42 @@ const SearchResults = () => {
                                                     <div className="fw-bold text-success fs-5">₹{f.fare.toLocaleString()}</div>
                                                     <small className="text-muted">per person</small>
                                                 </td>
-                                                <td>
-                                                    <button onClick={() => bookFlights(f.id)} className="btn btn-primary btn-sm px-3">
-                                                        Book
-                                                    </button>
-                                                    <button className="btn btn-outline-secondary btn-sm ms-1" data-bs-toggle="collapse" data-bs-target={`#details-${index}`}>
-                                                        <i className="fas fa-info-circle">View Details</i>
-                                                    </button>
+                                                <td >
+                                                    <div className="d-flex flex-column gap-1">
+                                                        {f.isWifiAvailable === "Yes" && (
+                                                            <span className="badge bg-success" style={{ fontSize: '10px', padding: '2px 6px' }}>
+                                                                WiFi
+                                                            </span>
+                                                        )}
+                                                        {f.mealAvailable === "Yes" && (
+                                                            <span className="badge bg-warning text-dark" style={{ fontSize: '10px', padding: '2px 6px' }}>
+                                                                Meal
+                                                            </span>
+                                                        )}
+                                                        {f.freeMeal === "Yes" && (
+                                                            <span  title="Free Meal Available"  className="badge bg-success" style={{ fontSize: '10px', padding: '2px 6px' }}>
+                                                                Free Meal
+                                                            </span>
+                                                        )}
+                                                        {f.isWifiAvailable !== "Yes" && f.mealAvailable !== "Yes" && f.freeMeal !== "Yes" && (
+                                                            <span className="text-muted small">-</span>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                                <td style={{ width: '140px' }}>
+                                                    <div className="d-flex gap-1">
+                                                        <button onClick={() => bookFlights(f.id)} className="btn btn-primary btn-sm">
+                                                            Book
+                                                        </button>
+                                                        <button
+                                                            className="btn btn-outline-secondary btn-sm"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target={`#details-${index}`}
+                                                            style={{ fontSize: '11px' }}
+                                                        >
+                                                            Details
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             <tr className="collapse" id={`details-${index}`}>
@@ -396,7 +422,7 @@ const SearchResults = () => {
                                 })
 
                                 }
-                               
+
                             </tbody>
                         </table>
 
@@ -425,8 +451,8 @@ const SearchResults = () => {
                             </ul>
                         </nav>
                     </div>
-                   
-                    
+
+
                 </div>
             </div>
         </div>

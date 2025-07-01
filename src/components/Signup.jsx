@@ -89,10 +89,30 @@ const Signup = () => {
 
         if (role === "CUSTOMER") {
             try {
+                const formData = new FormData();
+                formData.append("file", image);
+                const response = await axios.post("http://localhost:8080/api/customer/add",
+                    {
+                        "user": {
+                            "username": username,
+                            "password": password
+                        },
+                        "fullName": name,
+                        "email": email,
+                        "contactNumber": contact,
+                        "address": address
+                    }
+                )
+                console.log(response.data);
 
-
+                const customer = await axios.put(`http://localhost:8080/api/customer/upload/image/${response.data.id}`,
+                    formData
+                )
+                console.log(customer.data);
+                toast.success("Added Customer Successfully");
+                navigate("/")
             } catch (error) {
-
+                console.log(error);
             }
         }
         else if (role === "FLIGHTOWNER") {
@@ -231,18 +251,7 @@ const Signup = () => {
                                             ✈️ Flight‐Owner
                                         </label>
 
-                                        <input
-                                            type="radio" required
-                                            className="btn-check"
-                                            name="role"
-                                            id="roleManager"
-                                            value="MANAGER"
-                                            checked={role === "MANAGER"}
-                                            onChange={e => setRole(e.target.value)}
-                                        />
-                                        <label className="btn btn-outline-primary btn-sm" htmlFor="roleManager">
-                                            🛠️ Manager
-                                        </label>
+
                                     </div>
                                 </div>
 
@@ -288,7 +297,7 @@ const Signup = () => {
                                                 <input
                                                     type="email" required
                                                     className="form-control border-start-0 py-2"
-                                                    placeholder="Enter your Company Email"
+                                                    placeholder="Enter your Email"
                                                     style={{ fontSize: '15px' }}
                                                     onChange={(e) => setEmail(e.target.value)}
                                                 />

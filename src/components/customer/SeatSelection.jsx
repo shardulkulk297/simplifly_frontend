@@ -23,8 +23,11 @@ const SeatSelection = ({ selectedSeats, maxSeats, onSeatSelect, seats, loading }
         if (selectedSeats.includes(seat.seatNumber)) {
             return 'btn btn-primary btn-sm';
         }
-        if (seat.seatStatus === "BOOKED" || seat.seatStatus === "HOLD") {
+        if (seat.seatStatus === "BOOKED") {
             return "btn btn-secondary btn-sm"
+        }
+        if(seat.seatStatus === "HOLD"){
+            return "btn btn-warning btn-sm"
         }
         return 'btn btn-success btn-sm'
     }

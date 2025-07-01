@@ -144,7 +144,7 @@ const PaymentPage = () => {
                 })
             console.log(response.data);
             setBookingResponse(response.data);
-            toast.success("Booking Successful!!")
+            toast.success("Booking Successful You will be navigated to booking page shortly!!")
         } catch (error) {
             console.log(error);
             toast.error("Something went wrong");
@@ -152,8 +152,8 @@ const PaymentPage = () => {
 
         setPaymentComplete(true);
         setTimeout(() => {
-            navigate('/customer');
-        }, 5000);
+            navigate('/customer/bookings');
+        }, 9000);
 
     }
 

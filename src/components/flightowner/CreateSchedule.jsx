@@ -90,14 +90,46 @@ const CreateSchedule = () => {
             await getAllSchedules(dispatch)
 
         } catch (error) {
-                console.error(error);
-                const errMsg = error.response?.data?.message || 'Something went wrong'
-                toast.error(errMsg);
-            
+            console.error(error);
+            const errMsg = error.response?.data?.message || 'Something went wrong'
+            toast.error(errMsg);
+
         }
 
     }
 
+    useEffect(() => {
+        if (departureTime && selectedFlight?.route?.duration) {
+            
+            const durationStr = selectedFlight.route.duration.toLowerCase();
+
+           
+            const hourMatch = durationStr.match(/(\d+)\s*hour/);
+            const hours = hourMatch ? parseInt(hourMatch[1], 10) : 0;
+
+            
+            const minuteMatch = durationStr.match(/(\d+)\s*minute/);
+            const minutes = minuteMatch ? parseInt(minuteMatch[1], 10) : 0;
+
+            if (hours > 0 || minutes > 0) {
+                const depDate = new Date(departureTime);
+
+                
+                depDate.setHours(depDate.getHours() + hours);
+                depDate.setMinutes(depDate.getMinutes() + minutes);
+
+                
+                const year = depDate.getFullYear();
+                const month = String(depDate.getMonth() + 1).padStart(2, '0');
+                const day = String(depDate.getDate()).padStart(2, '0');
+                const hour = String(depDate.getHours()).padStart(2, '0');
+                const minute = String(depDate.getMinutes()).padStart(2, '0');
+
+                const formattedDateTime = `${year}-${month}-${day}T${hour}:${minute}`;
+                setArrivalTime(formattedDateTime);
+            }
+        }
+    }, [departureTime, selectedFlight]);
     return (
         <div className='container-fluid min-vh-100'>
             <h1>Schedule your Flights 📅</h1>
@@ -133,19 +165,20 @@ const CreateSchedule = () => {
                                 </div>
                                 <div className='mb-2'>
                                     <label htmlFor="" className='form-label '>Departure Time</label>
-                                      <input required type="datetime-local" className='form-control form-control-sm'
-                                    value={departureTime}
-                                    min={new Date().toISOString().slice(0, 16)}
-                                    onChange={(e) => setDepartureTime(e.target.value)} />
+                                    <input required type="datetime-local" className='form-control form-control-sm'
+                                        value={departureTime}
+                                        min={new Date().toISOString().slice(0, 16)}
+                                        onChange={(e) => setDepartureTime(e.target.value)} />
                                 </div>
                                 <div className='mb-2'>
                                     <label htmlFor="" className='form-label'>Arrival Time</label>
-                                     <input type="datetime-local" className='form-control form-control-sm'
-                                    value={arrivalTime}
-                                    min={departureTime || new Date().toISOString().slice(0, 16)}
-                                    onChange={(e) => setArrivalTime(e.target.value)} />
+                                    <input type="datetime-local" className='form-control form-control-sm'
+                                        value={arrivalTime}
+                                        disabled
+                                        min={departureTime || new Date().toISOString().slice(0, 16)}
+                                        onChange={(e) => setArrivalTime(e.target.value)} />
                                 </div>
-                            
+
                                 <h6 className='text-center mb-2'>Add Perks for the Flight</h6>
                                 <div className='row g-3' >
                                     <div className="col-12 col-md-6">
